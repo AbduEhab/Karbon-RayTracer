@@ -2,7 +2,7 @@
 
 This is a Ray-Tracer which is extremly similar to the one I wrote in Java. Just wanted to make sure I can re-write any java code into cpp. I'll keep working on this project for a while.
 
-Fully supports Windows (full UI and stuff) - Linux works in `Legacy mode` which would output the rendered image onto the terminal, macOS was not tested.
+Fully supports Windows (full UI and stuff) - NOW SUPPORTS GCC (tested on windows only). Linux works in `Legacy mode` which would output the rendered image onto the terminal, macOS was not tested.
 
 ## Requirements (for compiling)
 - [CMake](https://cmake.org/)
