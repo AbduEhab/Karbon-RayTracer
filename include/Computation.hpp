@@ -6,7 +6,7 @@
 
 struct Shape;
 
-namespace COAL
+namespace Karbon
 {
     struct Computation
     {
@@ -55,4 +55,4 @@ namespace COAL
         float m_n2;
         Point m_under_point;
     };
-} // namespace COAL
+} // namespace Karbon

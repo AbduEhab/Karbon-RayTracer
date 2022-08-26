@@ -7,7 +7,7 @@
 #include "Tuples/Point.hpp"
 #include "Tuples/Vector.hpp"
 
-namespace COAL
+namespace Karbon
 {
     struct Intersection
     {
@@ -46,9 +46,9 @@ namespace COAL
 
             if (!xs.empty())
             {
-                std::deque<const COAL::Shape *> shape_deque;
+                std::deque<const Karbon::Shape *> shape_deque;
 
-                for (const COAL::Intersection &intersection : xs)
+                for (const Karbon::Intersection &intersection : xs)
                 {
                     if (intersection == *this)
                         if (shape_deque.empty())
@@ -102,7 +102,7 @@ namespace COAL
 
     private:
         // check if deque containts a certain intersction
-        [[nodiscard]] bool contains(const std::deque<const COAL::Shape *> &deque, const COAL::Shape &element) const
+        [[nodiscard]] bool contains(const std::deque<const Karbon::Shape *> &deque, const Karbon::Shape &element) const
         {
             for (const auto &shape : deque)
             {
@@ -114,7 +114,7 @@ namespace COAL
         }
 
         // remove a shape from deque
-        [[nodiscard]] void remove(std::deque<const COAL::Shape *> &deque, const COAL::Shape &element) const
+        [[nodiscard]] void remove(std::deque<const Karbon::Shape *> &deque, const Karbon::Shape &element) const
         {
             for (auto it = deque.begin(); it != deque.end(); it++)
             {
@@ -137,4 +137,4 @@ namespace COAL
         Intersection i1;
         Intersection i2;
     };
-} // namespace COAL
+} // namespace Karbon

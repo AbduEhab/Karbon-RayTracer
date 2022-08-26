@@ -9,7 +9,7 @@
 #include <Tuples/Point.hpp>
 #include <Tuples/Vector.hpp>
 
-namespace COAL
+namespace Karbon
 {
     struct Cube : public Shape
     {
@@ -126,4 +126,4 @@ namespace COAL
             return cube;
         }
     };
-}; // namespace COAL
+}; // namespace Karbon

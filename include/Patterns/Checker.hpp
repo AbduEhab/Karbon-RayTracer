@@ -4,17 +4,17 @@
 #include "Tuples/Color.hpp"
 #include "Tuples/Point.hpp"
 
-namespace COAL
+namespace Karbon
 {
     struct Checker : public Pattern
     {
         [[nodiscard]] constexpr Checker() : Pattern() {}
 
-        [[nodiscard]] constexpr Checker(COAL::Color &first, COAL::Color &second) : Pattern(first, second) {}
+        [[nodiscard]] constexpr Checker(Karbon::Color &first, Karbon::Color &second) : Pattern(first, second) {}
 
-        [[nodiscard]] constexpr Checker(COAL::Color &first, COAL::Color &second, COAL::Matrix4 &transform) : Pattern(first, second, transform) {}
+        [[nodiscard]] constexpr Checker(Karbon::Color &first, Karbon::Color &second, Karbon::Matrix4 &transform) : Pattern(first, second, transform) {}
 
-        [[nodiscard]] COAL::Color color_at(const COAL::Point &p) const override
+        [[nodiscard]] Karbon::Color color_at(const Karbon::Point &p) const override
         {
             if ((int)(std::abs(p.x) + std::abs(p.y) + std::abs(p.z)) % 2 == 0)
                 return m_first_color;
@@ -50,4 +50,4 @@ namespace COAL
             return std::make_shared<Checker>(first_color, second_color, transform);
         }
     };
-} // namespace COAL
+} // namespace Karbon

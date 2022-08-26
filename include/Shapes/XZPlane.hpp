@@ -7,7 +7,7 @@
 #include <Tuples/Point.hpp>
 #include <Tuples/Vector.hpp>
 
-namespace COAL
+namespace Karbon
 {
     struct XZPlane : public Shape
     {
@@ -91,4 +91,4 @@ namespace COAL
             return XZ_plane;
         }
     };
-}; // namespace COAL
+}; // namespace Karbon

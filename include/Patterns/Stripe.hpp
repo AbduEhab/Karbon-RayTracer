@@ -4,17 +4,17 @@
 #include "Tuples/Color.hpp"
 #include "Tuples/Point.hpp"
 
-namespace COAL
+namespace Karbon
 {
     struct Stripe : public Pattern
     {
         [[nodiscard]] constexpr Stripe() : Pattern() {}
 
-        [[nodiscard]] constexpr Stripe(COAL::Color &first, COAL::Color &second) : Pattern(first, second) {}
+        [[nodiscard]] constexpr Stripe(Karbon::Color &first, Karbon::Color &second) : Pattern(first, second) {}
 
-        [[nodiscard]] constexpr Stripe(COAL::Color &first, COAL::Color &second, COAL::Matrix4 &transform) : Pattern(first, second, transform) {}
+        [[nodiscard]] constexpr Stripe(Karbon::Color &first, Karbon::Color &second, Karbon::Matrix4 &transform) : Pattern(first, second, transform) {}
 
-        [[nodiscard]] COAL::Color color_at(const COAL::Point &p) const override
+        [[nodiscard]] Karbon::Color color_at(const Karbon::Point &p) const override
         {
             if ((int)(std::floor(p.x)) % 2 == 0)
                 return m_first_color;
@@ -49,4 +49,4 @@ namespace COAL
         }
     };
 
-} // namespace COAL
+} // namespace Karbon

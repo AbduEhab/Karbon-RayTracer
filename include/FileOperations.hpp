@@ -5,7 +5,7 @@
 #include "json.hpp"
 #include "stb_image_write.h"
 
-namespace COAL
+namespace Karbon
 {
 
     [[nodiscard]] std::string read_file(const std::string &filepath)
@@ -88,7 +88,7 @@ namespace COAL
         return extension;
     }
 
-    int save_image(std::shared_ptr<COAL::Color[]> canvas, int width, int height, std::string filename = "ExampleRender.jpg")
+    int save_image(std::shared_ptr<Karbon::Color[]> canvas, int width, int height, std::string filename = "ExampleRender.jpg")
     {
         PROFILE_FUNCTION();
 
@@ -100,7 +100,7 @@ namespace COAL
 
         for (int32_t i = 0; i < width * height; i++)
         {
-            COAL::Color curr = canvas[i];
+            Karbon::Color curr = canvas[i];
 
             pixels[index++] = (uint8_t)curr.r;
             pixels[index++] = (uint8_t)curr.g;

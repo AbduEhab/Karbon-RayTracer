@@ -5,7 +5,7 @@
 #include "Tuples/Color.hpp"
 #include "Tuples/Point.hpp"
 
-namespace COAL
+namespace Karbon
 {
     struct Shape;
 
@@ -26,16 +26,16 @@ namespace COAL
         }
 
         // init pattern with first and second color and transform matrix
-        [[nodiscard]] constexpr Pattern(Color &first, Color &second, COAL::Matrix4 &transform)
+        [[nodiscard]] constexpr Pattern(Color &first, Color &second, Karbon::Matrix4 &transform)
         {
             m_first_color = first;
             m_second_color = second;
             m_transform = transform;
         }
 
-        [[nodiscard]] virtual COAL::Color color_at(const COAL::Point &p) const = 0;
+        [[nodiscard]] virtual Karbon::Color color_at(const Karbon::Point &p) const = 0;
 
-        [[nodiscard]] COAL::Color colot_at(const Shape &s, const COAL::Point &p) const;
+        [[nodiscard]] Karbon::Color colot_at(const Shape &s, const Karbon::Point &p) const;
 
         // == operator
         friend bool operator==(const Pattern &lhs, const Pattern &rhs)
@@ -54,9 +54,9 @@ namespace COAL
         // serialize all data to a nlohmann json string object
         [[nodiscard]] virtual std::string to_json() const noexcept = 0;
 
-        COAL::Matrix4 m_transform = COAL::IDENTITY;
-        COAL::Color m_first_color = COAL::WHITE;
-        COAL::Color m_second_color = COAL::BLACK;
+        Karbon::Matrix4 m_transform = Karbon::IDENTITY;
+        Karbon::Color m_first_color = Karbon::WHITE;
+        Karbon::Color m_second_color = Karbon::BLACK;
     };
 
-} // namespace COAL
+} // namespace Karbon

@@ -4,17 +4,17 @@
 #include "Tuples/Color.hpp"
 #include "Tuples/Point.hpp"
 
-namespace COAL
+namespace Karbon
 {
     struct Ring : public Pattern
     {
         [[nodiscard]] constexpr Ring() : Pattern() {}
 
-        [[nodiscard]] constexpr Ring(COAL::Color &first, COAL::Color &second) : Pattern(first, second) {}
+        [[nodiscard]] constexpr Ring(Karbon::Color &first, Karbon::Color &second) : Pattern(first, second) {}
 
-        [[nodiscard]] constexpr Ring(COAL::Color &first, COAL::Color &second, COAL::Matrix4 &transform) : Pattern(first, second, transform) {}
+        [[nodiscard]] constexpr Ring(Karbon::Color &first, Karbon::Color &second, Karbon::Matrix4 &transform) : Pattern(first, second, transform) {}
 
-        [[nodiscard]] COAL::Color color_at(const COAL::Point &p) const override
+        [[nodiscard]] Karbon::Color color_at(const Karbon::Point &p) const override
         {
             if ((int)(sqrt(p.x * p.x + p.z * p.z)) % 2 == 0)
                 return m_first_color;
@@ -48,4 +48,4 @@ namespace COAL
             return std::make_shared<Ring>(first_color, second_color, transform);
         }
     };
-} // namespace COAL
+} // namespace Karbon

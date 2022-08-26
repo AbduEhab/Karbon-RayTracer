@@ -3,7 +3,7 @@
 #include "Vector.hpp"
 #include "json.hpp"
 
-namespace COAL
+namespace Karbon
 {
     struct Point
     {
@@ -12,6 +12,8 @@ namespace COAL
         [[nodiscard]] constexpr Point(float x, float y, float z) : x(x), y(y), z(z){};
 
         [[nodiscard]] constexpr Point(const float (&vector_array)[3]) : x(vector_array[0]), y(vector_array[1]), z(vector_array[2]){};
+
+        [[nodiscard]] constexpr Point(const Vector v) : x(v.x), y(v.y), z(v.z){};
 
         [[nodiscard]] bool operator==(const Point &rhs) const noexcept
         {
@@ -157,7 +159,6 @@ namespace COAL
             nlohmann::json j = nlohmann::json::parse(json_string);
             return Point(j["x"], j["y"], j["z"]);
         }
-        
 
         float x;
         float y;

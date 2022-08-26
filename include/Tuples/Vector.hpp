@@ -3,7 +3,7 @@
 #include "Constants.hpp"
 #include "json.hpp"
 
-namespace COAL
+namespace Karbon
 {
 
     struct Vector
@@ -13,6 +13,17 @@ namespace COAL
 
         [[nodiscard]] constexpr Vector(const float x, const float y, const float z) : x(x), y(y), z(z){};
         [[nodiscard]] constexpr Vector(const float (&vector_array)[3]) : x(vector_array[0]), y(vector_array[1]), z(vector_array[2]){};
+
+        [[nodiscard]] static Vector make_random(float min = 0, float max = 1)
+        {
+            return Vector(random(min, max), random(min, max), random(min, max));
+        }
+
+        [[nodiscard]] static Vector random_in_unit_sphere()
+        {
+            Vector p = make_random(-1, 1);
+            return p.normalize();
+        }
 
         [[nodiscard]] int operator==(const Vector &rhs) const noexcept
         {
@@ -186,4 +197,9 @@ namespace COAL
         float y;
         float z;
     };
+
+    [[nodiscard]] constexpr Vector operator*(const float t, const Vector &v)
+    {
+        return Vector(t * v.x, t * v.y, t * v.z);
+    }
 }

@@ -1,9 +1,10 @@
 cmake_minimum_required(VERSION 3.13)
 
-project(Cpp_RayTracer VERSION 0.2.0)
+project(karbon-RayTracer VERSION 0.6.0 LANGUAGES CXX)
+enable_language(CXX)
 
 # ----------------------------------------------------------------------------------------------
-# Part till line 44 is taken from @lefticus
+# Part till line 71 is taken from @lefticus
 
 # set a default CXX standard used by the external tools like clang-tidy, cppcheck, etc.
 # You can later set fine-grained standards for each target using `target_compile_features`
@@ -20,34 +21,59 @@ include(CMakeSetupFiles/Index.cmake)
 
 # Initialize project_options
 # uncomment the options to enable them
-project_options(
+if(MSVC)
+    project_options(
 
-    # ENABLE_CACHE
-    # ENABLE_CONAN
-    # WARNINGS_AS_ERRORS
-    # ENABLE_CPPCHECK
-    # ENABLE_CLANG_TIDY
-    # ENABLE_INCLUDE_WHAT_YOU_USE
-    # ENABLE_COVERAGE
-    # ENABLE_PCH
-    # PCH_HEADERS <Eigen/Dense> <fmt/core.h> <vector> <utility> <string> <string_view>
-    # ENABLE_DOXYGEN
-    # ENABLE_IPO
-    # ENABLE_USER_LINKER
-    # ENABLE_BUILD_WITH_TIME_TRACE
-    # ENABLE_UNITY
-    # ENABLE_SANITIZER_ADDRESS
-    # ENABLE_SANITIZER_LEAK
-    # ENABLE_SANITIZER_UNDEFINED_BEHAVIOR
-    # ENABLE_SANITIZER_THREAD
-    # ENABLE_SANITIZER_MEMORY
-    CLANG_WARNINGS "-Weverything"
-)
+        # ENABLE_CACHE
+        # ENABLE_CONAN
+        # WARNINGS_AS_ERRORS
+        # ENABLE_CPPCHECK
+        # ENABLE_CLANG_TIDY
+        # ENABLE_INCLUDE_WHAT_YOU_USE
+        # ENABLE_COVERAGE
+        # ENABLE_PCH
+        # PCH_HEADERS <Eigen/Dense> <fmt/core.h> <vector> <utility> <string> <string_view>
+        # ENABLE_DOXYGEN
+        # ENABLE_IPO
+        # ENABLE_USER_LINKER
+        # ENABLE_BUILD_WITH_TIME_TRACE
+        # ENABLE_UNITY
+        # ENABLE_SANITIZER_ADDRESS
+        # ENABLE_SANITIZER_LEAK
+        # ENABLE_SANITIZER_UNDEFINED_BEHAVIOR
+        # ENABLE_SANITIZER_THREAD
+        # ENABLE_SANITIZER_MEMORY
+        CLANG_WARNINGS "-Weverything"
+    )
+else()
+    project_options(
+
+        # ENABLE_CACHE
+        # ENABLE_CONAN
+        # WARNINGS_AS_ERRORS
+        # ENABLE_CPPCHECK
+        # ENABLE_CLANG_TIDY
+        # ENABLE_INCLUDE_WHAT_YOU_USE
+        # ENABLE_COVERAGE
+        # ENABLE_PCH
+        # PCH_HEADERS <Eigen/Dense> <fmt/core.h> <vector> <utility> <string> <string_view>
+        # ENABLE_DOXYGEN
+        # ENABLE_IPO
+        # ENABLE_USER_LINKER
+        # ENABLE_BUILD_WITH_TIME_TRACE
+        # ENABLE_UNITY
+        # ENABLE_SANITIZER_ADDRESS
+        # ENABLE_SANITIZER_LEAK
+        # ENABLE_SANITIZER_UNDEFINED_BEHAVIOR
+        # ENABLE_SANITIZER_THREAD
+        # ENABLE_SANITIZER_MEMORY
+    )
+endif()
 
 # ----------------------------------------------------------------------------------------------
 
 # ----------------------------------------------------------------------------------------------
-# Part till line 76 is very very similar to that of @codetechandtutorials
+# Part till line 102 is very very similar to that of @codetechandtutorials
 
 # DOWNLOAD ALL THE SUBMODULES
 find_package(Git QUIET)
@@ -56,10 +82,10 @@ if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
     # Update submodules as needed
     option(GIT_SUBMODULE "Check submodules during build" ON)
 
-    if(GIT_SUBMODULE)
+    if(NOT GIT_SUBMODULE) # Check submodules during build (SET TO 0 TO AVOID UPDATING)
         message(STATUS "Submodule update")
 
-        if(1)
+        if(0)
             execute_process(COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive
                 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
                 RESULT_VARIABLE GIT_SUBMOD_RESULT)
@@ -77,23 +103,22 @@ endif()
 
 # ----------------------------------------------------------------------------------------------
 if(NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE "Debug" CACHE STRING
-        "Build not specified, defaulted to Debug" FORCE)
-    message(STATUS "Build type not specified, defaulted to Debug")
+    set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING
+        "Build not specified, defaulted to RelWithDebInfo" FORCE)
+    message(STATUS "Build type not specified, defaulted to RelWithDebInfo")
 endif(NOT CMAKE_BUILD_TYPE)
 
 add_subdirectory(
     src
 )
 
-# IPO BUILD
-include(CheckIPOSupported)
+file(GLOB ImGui ${PROJECT_SOURCE_DIR}/external/Walnut/vendor/imgui/*.cpp)
+file(GLOB ImGui_headers ${PROJECT_SOURCE_DIR}/external/Walnut/vendor/imgui/*.h)
 
-check_ipo_supported(RESULT result)
-
-if(result)
-    set_property(TARGET Cpp_RayTracer PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE) # requires actual project name and doesn't work with ${PROJECT_NAME} (atleast with gcc)
-endif()
+add_library(ImGui
+    ${ImGui}
+    ${ImGui_headers}
+)
 
 add_subdirectory(
     external/Walnut/vendor/glm
@@ -110,7 +135,7 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_20)
 
 # Defining WL_PLATFORM_WINDOWS WL_DEBUG where applicable
-if(MSVC)
+if(WIN32)
     target_compile_definitions(${PROJECT_NAME} PRIVATE
         $<$<CONFIG:Debug>:DEBUG; WL_PLATFORM_WINDOWS; WL_DEBUG>
         $<$<CONFIG:RelWithDebInfo>:DEBUG; WL_PLATFORM_WINDOWS; WL_DEBUG>
@@ -129,7 +154,6 @@ endif()
 # <-- Add directories to include directory here: -->
 target_include_directories(${PROJECT_NAME}
     PUBLIC include
-    PUBLIC external
     PUBLIC external/glfw/include
     PUBLIC external/Walnut/vendor/glm
     PUBLIC external/Walnut/vendor/imgui
@@ -146,12 +170,13 @@ target_link_directories(${PROJECT_NAME}
     PRIVATE external/glfw/src
 )
 
+# <----------------------->
 find_package(Vulkan REQUIRED)
 
 # <-- Link needed Libs: -->
 target_link_libraries(${PROJECT_NAME}
     PRIVATE project_options project_warnings
-    PUBLIC glfw Vulkan::Vulkan ${VULKAN_LIB_LIST} ${Vulkan_LIBRARY}
+    PUBLIC glfw Vulkan::Vulkan ${VULKAN_LIB_LIST} ${Vulkan_LIBRARY} ImGui
 )
 
 # <----------------------->

@@ -15,6 +15,7 @@
 #include <memory>
 #include <mutex>
 #include <numbers>
+#include <random>
 #include <sstream>
 #include <stack>
 #include <string>
@@ -42,20 +43,36 @@ inline const int kCORE_COUNT = std::thread::hardware_concurrency();
 #include <direct.h>
 #include <windows.h>
 
-const std::string BINARY_DIRECTORY(std::string(_getcwd(NULL, 0)) + '/');
-const std::string TEST_DIRECTORY = std::filesystem::current_path().string();
+inline const std::string BINARY_DIRECTORY(std::filesystem::current_path().string());
+inline const std::string BINARY_DIRECTORY_TEST(std::string(_getcwd(NULL, 0)) + '/');
 
 #else
 
 #include <filesystem>
 #include <unistd.h>
 
-const std::string BINARY_DIRECTORY(std::string((char *)std::filesystem::current_path().c_str()) + "/");
-const std::string BINARY_DIRECTORY_TEST(std::string(get_current_dir_name()) + "/");
+inline const std::string BINARY_DIRECTORY(std::string((char *)std::filesystem::current_path().c_str()) + "/");
+inline const std::string BINARY_DIRECTORY_TEST(std::string(get_current_dir_name()) + "/");
 
 #endif
 
-#define kEpsilon 0.000001
+#define kEpsilon 0.000001f
+
+template <typename T>
+inline T random(T min = 0.0, T max = 1.0)
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<> dis(min, max);
+    return (T)dis(gen);
+}
+
+// map a given value to a range
+template <typename T>
+inline constexpr T map_to_range(T value, T min, T max, T new_min, T new_max)
+{
+    return (T)(((value - min) / (max - min)) * (new_max - new_min) + new_min);
+}
 
 void debug_print()
 {

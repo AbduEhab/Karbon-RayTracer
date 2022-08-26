@@ -3,7 +3,7 @@
 #include "Constants.hpp"
 #include "json.hpp"
 
-namespace COAL
+namespace Karbon
 {
     struct Color
     {
@@ -16,14 +16,73 @@ namespace COAL
 
         [[nodiscard]] constexpr Color(const float (&color_array)[4]) : r(color_array[0] > 255 ? 255 : color_array[0]), g(color_array[1] > 255 ? 255 : color_array[1]), b(color_array[2] > 255 ? 255 : color_array[3]), a(color_array[3] > 255 ? 255 : (int)color_array[3]){};
 
-        static constexpr Color create_SDR(float r, float g, float b) noexcept
+        [[nodiscard]] static constexpr Color create_SDR(float r, float g, float b) noexcept
         {
             return Color(r * 255, g * 255, b * 255);
         }
 
-        static constexpr Color create_SDR(const float (&color_array)[3]) noexcept
+        [[nodiscard]] static constexpr Color create_SDR(const float (&color_array)[3]) noexcept
         {
             return Color(color_array[0] * 255, color_array[1] * 255, color_array[2] * 255);
+        }
+
+        [[nodiscard]] static constexpr Color create_SDR(const Color &c) noexcept
+        {
+            return Color(c.r * 255, c.g * 255, c.b * 255);
+        }
+
+        [[nodiscard]] static constexpr uint32_t create_RGBA(uint32_t r, uint32_t g, uint32_t b, uint32_t a) noexcept
+        {
+            return ((r & 0xff) << 24) + ((g & 0xff) << 16) + ((b & 0xff) << 8) + (a & 0xff);
+        }
+
+        [[nodiscard]] constexpr uint32_t create_RGBA() const noexcept
+        {
+            return (((int)r & 0xff) << 24) + (((int)g & 0xff) << 16) + (((int)b & 0xff) << 8) + ((int)a & 0xff);
+        }
+
+        [[nodiscard]] static constexpr uint32_t create_ABGR(uint32_t r, uint32_t g, uint32_t b, uint32_t a) noexcept
+        {
+            return (((uint32_t)a & 0xff) << 24) + (((uint32_t)b & 0xff) << 16) + (((uint32_t)g & 0xff) << 8) + ((uint32_t)r & 0xff);
+        }
+
+        [[nodiscard]] constexpr uint32_t create_ABGR() const noexcept
+        {
+            return (((uint32_t)a & 0xff) << 24) + (((uint32_t)b & 0xff) << 16) + (((uint32_t)g & 0xff) << 8) + ((uint32_t)r & 0xff);
+        }
+
+        [[nodiscard]] static constexpr Color clamp(const Color &c) noexcept
+        {
+            return Color(255 * std::clamp(c.r, 0.0f, 1.0f), 255 * std::clamp(c.g, 0.0f, 1.0f), 255 * std::clamp(c.b, 0.0f, 1.0f));
+        }
+
+        // apply gamma correction
+        [[nodiscard]] static constexpr Color gamma_correct(const Color &c) noexcept
+        {
+            return Color(std::pow(c.r, 1.0f / 2.2f), std::pow(c.g, 1.0f / 2.2f), std::pow(c.b, 1.0f / 2.2f));
+        }
+        [[nodiscard]] static constexpr Color gamma_correct(const float (&color_array)[3]) noexcept
+        {
+            return Color(std::pow(color_array[0], 1.0f / 2.2f), std::pow(color_array[1], 1.0f / 2.2f), std::pow(color_array[2], 1.0f / 2.2f));
+        }
+        [[nodiscard]] static constexpr Color gamma_correct(const float (&color_array)[4]) noexcept
+        {
+            return Color(std::pow(color_array[0], 1.0f / 2.2f), std::pow(color_array[1], 1.0f / 2.2f), std::pow(color_array[2], 1.0f / 2.2f), (int)color_array[3]);
+        }
+        [[nodiscard]] static constexpr Color gamma_correct(const Color &c, float gamma) noexcept
+        {
+            return Color(std::pow(c.r, 1.0f / gamma), std::pow(c.g, 1.0f / gamma), std::pow(c.b, 1.0f / gamma));
+        }
+        [[nodiscard]] static constexpr Color gamma_correct(const float (&color_array)[3], float gamma) noexcept
+        {
+            return Color(std::pow(color_array[0], 1.0f / gamma), std::pow(color_array[1], 1.0f / gamma), std::pow(color_array[2], 1.0f / gamma));
+        }
+
+        // scale color with provided function
+        template <typename... TArgs>
+        [[nodiscard]] static constexpr Color scale(const Color &c, float (*f)(float, float, float, float, float), TArgs &&...args) noexcept
+        {
+            return Color(f(c.r, (float)(std::forward<TArgs>(args))...), f(c.g, (float)(std::forward<TArgs>(args))...), f(c.b, (float)(std::forward<TArgs>(args))...));
         }
 
         [[nodiscard]] int operator==(const Color &rhs) const noexcept
@@ -31,33 +90,13 @@ namespace COAL
             return (std::abs(r - rhs.r) <= kEpsilon) && (std::abs(g - rhs.g) <= kEpsilon) && (std::abs(b - rhs.b) <= kEpsilon) && (rhs.a == 0);
         }
 
-        static constexpr uint32_t create_RGBA(uint32_t r, uint32_t g, uint32_t b, uint32_t a) noexcept
-        {
-            return ((r & 0xff) << 24) + ((g & 0xff) << 16) + ((b & 0xff) << 8) + (a & 0xff);
-        }
-
-        constexpr uint32_t create_RGBA() const noexcept
-        {
-            return (((int)r & 0xff) << 24) + (((int)g & 0xff) << 16) + (((int)b & 0xff) << 8) + ((int)a & 0xff);
-        }
-
-        static constexpr uint32_t create_ABGR(uint32_t r, uint32_t g, uint32_t b, uint32_t a) noexcept
-        {
-            return (((uint32_t)a & 0xff) << 24) + (((uint32_t)b & 0xff) << 16) + (((uint32_t)g & 0xff) << 8) + ((uint32_t)r & 0xff);
-        }
-
-        constexpr uint32_t create_ABGR() const noexcept
-        {
-            return (((uint32_t)a & 0xff) << 24) + (((uint32_t)b & 0xff) << 16) + (((uint32_t)g & 0xff) << 8) + ((uint32_t)r & 0xff);
-        }
-
         // / operator
-        constexpr Color operator/(const float &rhs) const noexcept
+        [[nodiscard]] constexpr Color operator/(const float &rhs) const noexcept
         {
             return Color(r / rhs, g / rhs, b / rhs);
         }
 
-        [[nodiscard]] constexpr Color &operator+=(const float rhs) noexcept
+        constexpr Color &operator+=(const float rhs) noexcept
         {
             r = r + rhs;
             g = g + rhs;
@@ -65,7 +104,7 @@ namespace COAL
             return *this;
         }
 
-        [[nodiscard]] constexpr Color &operator+=(const Color &rhs) noexcept
+        constexpr Color &operator+=(const Color &rhs) noexcept
         {
             r += rhs.r;
             g += rhs.g;
@@ -73,7 +112,7 @@ namespace COAL
             return *this;
         }
 
-        [[nodiscard]] constexpr Color &operator-=(const float rhs) noexcept
+        constexpr Color &operator-=(const float rhs) noexcept
         {
             r = r - rhs;
             g = g - rhs;
@@ -81,7 +120,7 @@ namespace COAL
             return *this;
         }
 
-        [[nodiscard]] constexpr Color &operator-=(const Color &rhs) noexcept
+        constexpr Color &operator-=(const Color &rhs) noexcept
         {
             r -= rhs.r;
             g -= rhs.g;
@@ -89,7 +128,7 @@ namespace COAL
             return *this;
         }
 
-        [[nodiscard]] constexpr Color &operator*=(float factor) noexcept
+        constexpr Color &operator*=(float factor) noexcept
         {
             r *= factor;
             g *= factor;
@@ -97,7 +136,7 @@ namespace COAL
             return *this;
         }
 
-        [[nodiscard]] constexpr Color &operator*=(const Color &rhs) noexcept
+        constexpr Color &operator*=(const Color &rhs) noexcept
         {
             r *= rhs.r;
             g *= rhs.g;
@@ -164,6 +203,11 @@ namespace COAL
         float b;
         int a;
     };
+
+    [[nodiscard]] constexpr Color operator*(const float t, const Color &c)
+    {
+        return Color(t * c.r, t * c.g, t * c.b);
+    }
 
     static constexpr const Color BLACK = Color(0, 0, 0);
     static constexpr const Color GREY = Color(0.2f, 0.2f, 0.2f);

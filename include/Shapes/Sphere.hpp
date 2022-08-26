@@ -9,7 +9,7 @@
 #include <Tuples/Point.hpp>
 #include <Tuples/Vector.hpp>
 
-namespace COAL
+namespace Karbon
 {
     struct Sphere : public Shape
     {
@@ -119,4 +119,4 @@ namespace COAL
     {
         return static_cast<Sphere &>(Sphere().set_material(Material().set_transparency(1.0).set_refractive_index(1.5)));
     }
-}; // namespace COAL
+}; // namespace Karbon

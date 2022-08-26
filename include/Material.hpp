@@ -10,7 +10,7 @@
 // #include "Patterns/Ring.hpp"
 // #include "Patterns/Stripe.hpp"
 
-namespace COAL
+namespace Karbon
 {
 
     struct Shape;
@@ -325,7 +325,7 @@ namespace COAL
         }
 
     private:
-        Color m_color = COAL::WHITE;
+        Color m_color = Karbon::WHITE;
         std::shared_ptr<Pattern> m_pattern;
         float m_ambient = 0.1f;
         float m_diffuse = 0.9f;
@@ -335,4 +335,4 @@ namespace COAL
         float m_transparency = 0.0;
         float m_refractive_index = 1.0;
     };
-}; // namespace COAL
+}; // namespace Karbon

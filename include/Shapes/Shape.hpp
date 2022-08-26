@@ -8,7 +8,7 @@
 #include "Tuples/Point.hpp"
 #include "Tuples/Vector.hpp"
 
-namespace COAL
+namespace Karbon
 {
 
     struct Intersection;
@@ -17,6 +17,8 @@ namespace COAL
     {
 
         [[nodiscard]] virtual Intersection intersects(const Ray &ray) const = 0;
+
+        virtual ~Shape() = default;
 
         [[nodiscard]] virtual Vector normal_at(const Point &p) const = 0;
 
@@ -69,7 +71,7 @@ namespace COAL
             m_rotation_z = rotation[2];
             m_scale = Vector(scale[0], scale[1], scale[2]);
 
-            m_transform = COAL::IDENTITY.translate(translation[0], translation[1], translation[2]).scale(scale[0], scale[1], scale[2]);
+            m_transform = Karbon::IDENTITY.translate(translation[0], translation[1], translation[2]).scale(scale[0], scale[1], scale[2]);
             m_inverse_transform = m_transform.inverse();
             m_normal_transform = m_inverse_transform.transpose();
             m_inverse_normal_transform = m_normal_transform.inverse();
@@ -85,7 +87,7 @@ namespace COAL
             m_rotation_z = rotation[2];
             m_scale = Vector(scale[0], scale[1], scale[2]);
 
-            m_transform = COAL::IDENTITY.translate(translation[0], translation[1], translation[2]).scale(scale[0], scale[1], scale[2]).rotate(m_rotation_x, m_rotation_y, m_rotation_z);
+            m_transform = Karbon::IDENTITY.translate(translation[0], translation[1], translation[2]).scale(scale[0], scale[1], scale[2]).rotate(m_rotation_x, m_rotation_y, m_rotation_z);
             m_inverse_transform = m_transform.inverse();
             m_normal_transform = m_inverse_transform.transpose();
             m_inverse_normal_transform = m_normal_transform.inverse();
@@ -101,7 +103,7 @@ namespace COAL
             m_rotation_z = rotation[2] * (float)std::numbers::pi / 180.0f;
             m_scale = Vector(scale[0], scale[1], scale[2]);
 
-            m_transform = COAL::IDENTITY.translate(translation[0], translation[1], translation[2]).scale(scale[0], scale[1], scale[2]).rotate(m_rotation_x, m_rotation_y, m_rotation_z);
+            m_transform = Karbon::IDENTITY.translate(translation[0], translation[1], translation[2]).scale(scale[0], scale[1], scale[2]).rotate(m_rotation_x, m_rotation_y, m_rotation_z);
             m_inverse_transform = m_transform.inverse();
             m_normal_transform = m_inverse_transform.transpose();
             m_inverse_normal_transform = m_normal_transform.inverse();
@@ -113,7 +115,7 @@ namespace COAL
         Shape &translate(const Vector &t)
         {
             m_translation = t;
-            m_transform = COAL::IDENTITY.translate(t.x, t.y, t.z);
+            m_transform = Karbon::IDENTITY.translate(t.x, t.y, t.z);
             m_inverse_transform = m_transform.inverse();
             m_normal_transform = m_inverse_transform.transpose();
             m_inverse_normal_transform = m_normal_transform.inverse();
@@ -125,7 +127,7 @@ namespace COAL
         Shape &translate(const float x, const float y, const float z)
         {
             m_translation = Vector(x, y, z);
-            m_transform = COAL::IDENTITY.translate(x, y, z);
+            m_transform = Karbon::IDENTITY.translate(x, y, z);
             m_inverse_transform = m_transform.inverse();
             m_normal_transform = m_inverse_transform.transpose();
             m_inverse_normal_transform = m_normal_transform.inverse();
@@ -231,11 +233,11 @@ namespace COAL
 
     private:
         // private:
-        COAL::Material m_material = COAL::Material();
-        COAL::Matrix4 m_transform = COAL::IDENTITY;
-        COAL::Matrix4 m_inverse_transform = COAL::IDENTITY;
-        COAL::Matrix4 m_normal_transform = COAL::IDENTITY;
-        COAL::Matrix4 m_inverse_normal_transform = COAL::IDENTITY;
+        Karbon::Material m_material = Karbon::Material();
+        Karbon::Matrix4 m_transform = Karbon::IDENTITY;
+        Karbon::Matrix4 m_inverse_transform = Karbon::IDENTITY;
+        Karbon::Matrix4 m_normal_transform = Karbon::IDENTITY;
+        Karbon::Matrix4 m_inverse_normal_transform = Karbon::IDENTITY;
         Vector m_translation = Vector(0, 0, 0);
         Vector m_scale = Vector(1, 1, 1);
         float m_rotation_x = 0;
@@ -243,7 +245,7 @@ namespace COAL
         float m_rotation_z = 0;
     };
 
-    [[nodiscard]] COAL::Color Pattern::colot_at(const Shape &s, const COAL::Point &p) const
+    [[nodiscard]] Karbon::Color Pattern::colot_at(const Shape &s, const Karbon::Point &p) const
     {
         PROFILE_FUNCTION();
 
@@ -253,4 +255,4 @@ namespace COAL
         return color_at(pattern_point);
     }
 
-} // namespace COAL
+} // namespace Karbon

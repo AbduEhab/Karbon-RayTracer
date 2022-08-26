@@ -5,7 +5,7 @@
 #include "Tuples/Vector.hpp"
 #include "json.hpp"
 
-namespace COAL
+namespace Karbon
 {
     struct Matrix4
     {
@@ -152,9 +152,9 @@ namespace COAL
         }
 
         // multiply vector3 by matrix and return a vector3
-        [[nodiscard]] constexpr COAL::Vector operator*(const COAL::Vector &other) const noexcept
+        [[nodiscard]] constexpr Karbon::Vector operator*(const Karbon::Vector &other) const noexcept
         {
-            COAL::Vector result;
+            Karbon::Vector result;
 
             result.x = this->_matrix[0][0] * other.x + this->_matrix[0][1] * other.y +
                        this->_matrix[0][2] * other.z;
@@ -166,9 +166,9 @@ namespace COAL
             return result;
         }
 
-        [[nodiscard]] constexpr COAL::Point operator*(const COAL::Point &other) const noexcept
+        [[nodiscard]] constexpr Karbon::Point operator*(const Karbon::Point &other) const noexcept
         {
-            COAL::Point result;
+            Karbon::Point result;
 
             result.x = this->_matrix[0][0] * other.x + this->_matrix[0][1] * other.y +
                        this->_matrix[0][2] * other.z + this->_matrix[0][3];

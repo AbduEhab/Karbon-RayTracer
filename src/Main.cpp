@@ -1,28 +1,28 @@
-#include <COAL.hpp>
+#include <Karbon.hpp>
 
-#define setup_world()                                                                                                                                                         \
-                                                                                                                                                                              \
-    auto floor = std::make_shared<COAL::XZPlane>(COAL::XZPlane());                                                                                                            \
-    floor->get_material().set_color(COAL::Color(1.0f, 0.9f, 0.9f)).set_specular(0).set_reflectiveness(0.3f);                                                                  \
-                                                                                                                                                                              \
-    auto middle_sphere = std::make_shared<COAL::Sphere>(COAL::Sphere());                                                                                                      \
-    middle_sphere->get_material().set_color(COAL::Color(0.0f, 0.0f, 0.0f)).set_specular(1).set_diffuse(0.1f).set_reflectiveness(0.3f).set_shininess(300).set_transparency(1); \
-    middle_sphere->translate(-0.5f, 1.0f, 0.5f);                                                                                                                              \
-                                                                                                                                                                              \
-    auto right_sphere = std::make_shared<COAL::Sphere>(COAL::Sphere());                                                                                                       \
-    right_sphere->get_material().set_color(COAL::Color(0.5f, 1.0f, 0.1f)).set_specular(0.3f).set_diffuse(0.7f).set_reflectiveness(0.3f);                                      \
-    right_sphere->translate(1.5f, 0.5f, -0.5f).scale(0.5f, 0.5f, 0.5f);                                                                                                       \
-                                                                                                                                                                              \
-    auto left_sphere = std::make_shared<COAL::Sphere>(COAL::Sphere());                                                                                                        \
-    left_sphere->get_material().set_color(COAL::Color(1, 0.8f, 0.1f)).set_specular(0.3f).set_diffuse(0.7f).set_reflectiveness(0.3f);                                          \
-    left_sphere->translate(-1.5f, 0.33f, -0.75f).scale(0.33f, 0.33f, 0.33f);                                                                                                  \
-                                                                                                                                                                              \
-    auto light = std::make_shared<COAL::PointLight>(COAL::PointLight());                                                                                                      \
-    light->set_intensity(COAL::Color((float)255, (float)255, (float)255)).set_position(COAL::Point((float)-10, (float)10, (float)-10));
+#define setup_world()                                                                                                                                                           \
+                                                                                                                                                                                \
+    auto floor = std::make_shared<Karbon::XZPlane>(Karbon::XZPlane());                                                                                                          \
+    floor->get_material().set_color(Karbon::Color(1.0f, 0.9f, 0.9f)).set_specular(0).set_reflectiveness(0.3f);                                                                  \
+                                                                                                                                                                                \
+    auto middle_sphere = std::make_shared<Karbon::Sphere>(Karbon::Sphere());                                                                                                    \
+    middle_sphere->get_material().set_color(Karbon::Color(0.0f, 0.0f, 0.0f)).set_specular(1).set_diffuse(0.1f).set_reflectiveness(0.3f).set_shininess(300).set_transparency(1); \
+    middle_sphere->translate(-0.5f, 1.0f, 0.5f);                                                                                                                                \
+                                                                                                                                                                                \
+    auto right_sphere = std::make_shared<Karbon::Sphere>(Karbon::Sphere());                                                                                                     \
+    right_sphere->get_material().set_color(Karbon::Color(0.5f, 1.0f, 0.1f)).set_specular(0.3f).set_diffuse(0.7f).set_reflectiveness(0.3f);                                      \
+    right_sphere->translate(1.5f, 0.5f, -0.5f).scale(0.5f, 0.5f, 0.5f);                                                                                                         \
+                                                                                                                                                                                \
+    auto left_sphere = std::make_shared<Karbon::Sphere>(Karbon::Sphere());                                                                                                      \
+    left_sphere->get_material().set_color(Karbon::Color(1, 0.8f, 0.1f)).set_specular(0.3f).set_diffuse(0.7f).set_reflectiveness(0.3f);                                          \
+    left_sphere->translate(-1.5f, 0.33f, -0.75f).scale(0.33f, 0.33f, 0.33f);                                                                                                    \
+                                                                                                                                                                                \
+    auto light = std::make_shared<Karbon::PointLight>(Karbon::PointLight());                                                                                                    \
+    light->set_intensity(Karbon::Color((float)255, (float)255, (float)255)).set_position(Karbon::Point((float)-10, (float)10, (float)-10));
 
-auto scene = COAL::Scene(COAL::Camera(800, 600, (float)std::numbers::pi / 3), COAL::World());
+auto scene = Karbon::Scene(Karbon::Camera(800, 600, (float)std::numbers::pi / 3), Karbon::World());
 
-std::shared_ptr<COAL::Color[]> canvas;
+std::shared_ptr<Karbon::Color[]> canvas;
 std::thread render_thread;
 
 #ifdef _WIN32
@@ -40,6 +40,9 @@ class MainLayer : public Walnut::Layer
 public:
     virtual void OnUIRender() override
     {
+
+        ImGui::ShowDemoWindow();
+
         ImGui::Begin("World Outline");
         {
             static char *file_dialog_buffer = nullptr;
@@ -109,7 +112,7 @@ public:
                 {
                     if (ImGui::Button("Add Sphere"))
                     {
-                        auto sphere = std::make_shared<COAL::Sphere>(COAL::Sphere());
+                        auto sphere = std::make_shared<Karbon::Sphere>(Karbon::Sphere());
                         scene.m_world.add_shape(sphere);
                     }
 
@@ -117,7 +120,7 @@ public:
 
                     if (ImGui::Button("Add Cube"))
                     {
-                        auto cube = std::make_shared<COAL::Cube>(COAL::Cube());
+                        auto cube = std::make_shared<Karbon::Cube>(Karbon::Cube());
                         scene.m_world.add_shape(cube);
                     }
 
@@ -125,13 +128,13 @@ public:
 
                     // if(ImGui::Button("Add Cylinder"))
                     // {
-                    //     auto cylinder = std::make_shared<COAL::Cylinder>(COAL::Cylinder());
+                    //     auto cylinder = std::make_shared<Karbon::Cylinder>(Karbon::Cylinder());
                     //     scene.m_world.add_shape(cylinder);
                     // }
 
                     if (ImGui::Button("Add XZ-Plane"))
                     {
-                        auto plane = std::make_shared<COAL::XZPlane>(COAL::XZPlane());
+                        auto plane = std::make_shared<Karbon::XZPlane>(Karbon::XZPlane());
                         scene.m_world.add_shape(plane);
                     }
 
@@ -139,7 +142,7 @@ public:
 
                     if (ImGui::Button("Add YZ-Plane"))
                     {
-                        auto plane = std::make_shared<COAL::YZPlane>(COAL::YZPlane());
+                        auto plane = std::make_shared<Karbon::YZPlane>(Karbon::YZPlane());
                         scene.m_world.add_shape(plane);
                     }
 
@@ -147,7 +150,7 @@ public:
 
                     if (ImGui::Button("Add XY-Plane"))
                     {
-                        auto plane = std::make_shared<COAL::XYPlane>(COAL::XYPlane());
+                        auto plane = std::make_shared<Karbon::XYPlane>(Karbon::XYPlane());
                         scene.m_world.add_shape(plane);
                     }
                 }
@@ -169,7 +172,7 @@ public:
                 {
                     if (ImGui::Button("Add Point-Light"))
                     {
-                        auto light = std::make_shared<COAL::PointLight>(COAL::PointLight());
+                        auto light = std::make_shared<Karbon::PointLight>(Karbon::PointLight());
                         scene.m_world.add_light(light);
                     }
                 }
@@ -311,17 +314,39 @@ public:
 
                     float size[2] = {(float)h_size, (float)v_size};
 
-                    ImGui::InputFloat2("Render Resolution", (float *)&size);
+                    ImGui::Text("Resolution: (w, h):");
+
+                    ImGui::InputFloat2("##Render Resolution", (float *)&size);
 
                     scene.m_camera.set_width((int)size[0]);
                     scene.m_camera.set_height((int)size[1]);
                 }
 
-                auto render_depth = scene.m_world.get_max_depth();
+                ImGui::Text("Sampling Settings:");
 
-                ImGui::SliderInt("Render Depth", &render_depth, 0, 10);
+                {
+                    auto render_depth = scene.m_world.get_max_depth();
 
-                scene.m_world.set_max_depth(render_depth);
+                    ImGui::SliderInt("##Render Depth", &render_depth, 1, 10, "Render Depth : %d");
+
+                    scene.m_world.set_max_depth(render_depth);
+                }
+
+                {
+                    int samples_per_pixel = scene.m_world.get_samples_per_pixel();
+
+                    ImGui::SliderInt("##AA samples", &samples_per_pixel, 1, 100, "AA Samples: %d", ImGuiSliderFlags_Logarithmic);
+
+                    scene.m_world.set_samples_per_pixel(samples_per_pixel);
+                }
+
+                {
+                    int light_samples_per_pixel = scene.m_world.get_light_samples_per_pixel();
+
+                    ImGui::SliderInt("##Light Samples", &light_samples_per_pixel, 1, 100, "Light Samples: %f", ImGuiSliderFlags_Logarithmic);
+
+                    scene.m_world.set_light_samples_per_pixel(light_samples_per_pixel);
+                }
 
                 ImGui::TreePop(); // Render Settings
             }
@@ -342,9 +367,9 @@ public:
         {
             if (ImGui::Button("Save Render"))
             {
-                COAL::Timer timer;
+                Karbon::Timer timer;
 
-                COAL::save_image(canvas, scene.m_camera.get_width(), scene.m_camera.get_height(), "render.png");
+                Karbon::save_image(canvas, scene.m_camera.get_width(), scene.m_camera.get_height(), "render.png");
 
                 is_file_saved = true;
 
@@ -376,16 +401,16 @@ public:
     {
         PROFILE_FUNCTION();
 
-        COAL::Timer timer;
+        Karbon::Timer timer;
 
         is_first_render = false;
 
         // auto a2 = std::async([&]()
-        //                      { return scene.m_camera.classic_render_multi_threaded(scene.m_world, 3); });
+        //                      { return scene.m_camera.render_multi_threaded(scene.m_world, 3); });
 
         // canvas = a2.get();
 
-        canvas = scene.m_camera.classic_render_multi_threaded(scene.m_world);
+        canvas = scene.m_camera.render_multi_threaded(scene.m_world);
 
         if (!m_Image || m_ViewportWidth != m_Image->GetWidth() || m_ViewportHeight != m_Image->GetHeight())
         {
@@ -427,31 +452,31 @@ private:
 Walnut::Application *Walnut::CreateApplication([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
 {
 
-    auto floor = std::make_shared<COAL::XZPlane>(COAL::XZPlane());
-    floor->get_material().set_color(COAL::Color(1.0f, 0.9f, 0.9f)).set_specular(0).set_reflectiveness(0.3f);
+    auto floor = std::make_shared<Karbon::XZPlane>(Karbon::XZPlane());
+    floor->get_material().set_color(Karbon::Color(1.0f, 0.9f, 0.9f)).set_specular(0).set_reflectiveness(0.3f);
 
-    auto middle_sphere = std::make_shared<COAL::Sphere>(COAL::Sphere());
-    middle_sphere->get_material().set_color(COAL::Color(0.0f, 0.0f, 0.0f)).set_specular(1).set_diffuse(0.1f).set_reflectiveness(0.3f).set_shininess(200).set_transparency(1);
+    auto middle_sphere = std::make_shared<Karbon::Sphere>(Karbon::Sphere());
+    middle_sphere->get_material().set_color(Karbon::Color(0.0f, 0.0f, 0.0f)).set_specular(1).set_diffuse(0.1f).set_reflectiveness(0.3f).set_shininess(200).set_transparency(1);
     middle_sphere->translate(-0.5f, 1.0f, 0.5f);
 
-    auto right_sphere = std::make_shared<COAL::Sphere>(COAL::Sphere());
-    right_sphere->get_material().set_color(COAL::Color(0.5f, 1.0f, 0.1f)).set_specular(0.3f).set_diffuse(0.7f).set_reflectiveness(0.3f);
+    auto right_sphere = std::make_shared<Karbon::Sphere>(Karbon::Sphere());
+    right_sphere->get_material().set_color(Karbon::Color(0.5f, 1.0f, 0.1f)).set_specular(0.3f).set_diffuse(0.7f).set_reflectiveness(0.3f);
     right_sphere->translate(1.5f, 0.5f, -0.5f).scale(0.5f, 0.5f, 0.5f);
 
-    auto left_sphere = std::make_shared<COAL::Sphere>(COAL::Sphere());
-    left_sphere->get_material().set_color(COAL::Color(1, 0.8f, 0.1f)).set_specular(0.3f).set_diffuse(0.7f).set_reflectiveness(0.3f);
+    auto left_sphere = std::make_shared<Karbon::Sphere>(Karbon::Sphere());
+    left_sphere->get_material().set_color(Karbon::Color(1, 0.8f, 0.1f)).set_specular(0.3f).set_diffuse(0.7f).set_reflectiveness(0.3f);
     left_sphere->translate(-1.5f, 0.33f, -0.75f).scale(0.33f, 0.33f, 0.33f);
 
-    auto light = std::make_shared<COAL::PointLight>(COAL::PointLight());
-    light->set_intensity(COAL::Color((float)255, (float)255, (float)255)).set_position(COAL::Point((float)-10, (float)10, (float)-10));
+    auto light = std::make_shared<Karbon::PointLight>(Karbon::PointLight());
+    light->set_intensity(Karbon::Color((float)255, (float)255, (float)255)).set_position(Karbon::Point((float)-10, (float)10, (float)-10));
 
     scene.m_world.add_shapes({floor, middle_sphere, right_sphere, left_sphere});
     scene.m_world.add_lights({light});
 
-    scene.m_camera.transform(COAL::Point(0, 1.5, -5), COAL::Point(0, 1, 0), COAL::Vector(0, 1, 0));
+    scene.m_camera.transform(Karbon::Point(0, 1.5, -5), Karbon::Point(0, 1, 0), Karbon::Vector(0, 1, 0));
 
     Walnut::ApplicationSpecification spec;
-    spec.Name = "COAL Raytracer";
+    spec.Name = "Karbon Raytracer";
 
     Walnut::Application *app = new Walnut::Application(spec);
     app->PushLayer<MainLayer>();
@@ -480,7 +505,7 @@ int main()
     scene.m_world.add_shapes({floor, middle_sphere, right_sphere, left_sphere});
     scene.m_world.add_lights({light});
 
-    scene.m_camera.transform(COAL::Point(0, 1.5, -5), COAL::Point(0, 1, 0), COAL::Vector(0, 1, 0));
+    scene.m_camera.transform(Karbon::Point(0, 1.5, -5), Karbon::Point(0, 1, 0), Karbon::Vector(0, 1, 0));
 
     canvas = scene.m_camera.classic_render_multi_threaded(world, 4);
 

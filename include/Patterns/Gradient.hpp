@@ -4,17 +4,17 @@
 #include "Tuples/Color.hpp"
 #include "Tuples/Point.hpp"
 
-namespace COAL
+namespace Karbon
 {
     struct Gradient : public Pattern
     {
         [[nodiscard]] constexpr Gradient() : Pattern() {}
 
-        [[nodiscard]] constexpr Gradient(COAL::Color &first, COAL::Color &second) : Pattern(first, second) {}
+        [[nodiscard]] constexpr Gradient(Karbon::Color &first, Karbon::Color &second) : Pattern(first, second) {}
 
-        [[nodiscard]] constexpr Gradient(COAL::Color &first, COAL::Color &second, COAL::Matrix4 &transform) : Pattern(first, second, transform) {}
+        [[nodiscard]] constexpr Gradient(Karbon::Color &first, Karbon::Color &second, Karbon::Matrix4 &transform) : Pattern(first, second, transform) {}
 
-        [[nodiscard]] COAL::Color color_at(const COAL::Point &p) const override
+        [[nodiscard]] Karbon::Color color_at(const Karbon::Point &p) const override
         {
             // float x = p.x;
             // float y = p.y;
@@ -27,7 +27,7 @@ namespace COAL
             // float b = (x * m_transform[2][0] + y * m_transform[2][1] + z * m_transform[2][2] + m_transform[2][3]) /
             //            (x * m_transform[3][0] + y * m_transform[3][1] + z * m_transform[3][2] + m_transform[3][3]);
 
-            // return COAL::Color(r, g, b);
+            // return Karbon::Color(r, g, b);
 
             Color distance = m_second_color - m_first_color;
             float fraction = p.x - std::floor(p.x);
@@ -61,4 +61,4 @@ namespace COAL
             return std::make_shared<Gradient>(first_color, second_color, transform);
         }
     };
-} // namespace COAL
+} // namespace Karbon

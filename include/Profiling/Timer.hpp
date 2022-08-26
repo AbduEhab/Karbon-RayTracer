@@ -1,6 +1,6 @@
 #pragma once
 
-namespace COAL
+namespace Karbon
 {
 
     struct Timer

@@ -5,13 +5,13 @@
 #include "./Tuples/Vector.hpp"
 #include "json.hpp"
 
-namespace COAL
+namespace Karbon
 {
     struct PointLight : public Light
     {
         [[nodiscard]] constexpr PointLight() : Light() {}
 
-        [[nodiscard]] constexpr PointLight(COAL::Point &position, COAL::Color &intensity) : Light(position, intensity) {}
+        [[nodiscard]] constexpr PointLight(Karbon::Point &position, Karbon::Color &intensity) : Light(position, intensity) {}
 
         // implement abstract equality
         [[nodiscard]] bool operator==(const Light &rhs) const noexcept override
@@ -41,13 +41,13 @@ namespace COAL
         {
             nlohmann::json json_object = nlohmann::json::parse(json);
 
-            auto PointLight = std::make_shared<COAL::PointLight>(COAL::PointLight());
+            auto PointLight = std::make_shared<Karbon::PointLight>(Karbon::PointLight());
 
-            PointLight->set_position(COAL::Point::from_json(json_object["position"].dump()));
-            PointLight->set_intensity(COAL::Color::from_json(json_object["intensity"].dump()));
+            PointLight->set_position(Karbon::Point::from_json(json_object["position"].dump()));
+            PointLight->set_intensity(Karbon::Color::from_json(json_object["intensity"].dump()));
 
             return PointLight;
         }
     };
 
-} // namespace COAL
+} // namespace Karbon

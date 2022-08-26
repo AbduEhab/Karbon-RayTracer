@@ -1,6 +1,6 @@
 #include <Constants.hpp>
 
-namespace COAL
+namespace Karbon
 {
     struct Scene
     {

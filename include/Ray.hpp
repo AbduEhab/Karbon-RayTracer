@@ -3,27 +3,44 @@
 #include "Tuples/Point.hpp"
 #include "Tuples/Vector.hpp"
 
-namespace COAL
+namespace Karbon
 {
     struct Ray
     {
     public:
+        [[nodiscard]] constexpr Ray()
+        {
+        }
+
         [[nodiscard]] constexpr Ray(const Point &origin, const Vector &direction)
             : m_origin(origin), m_direction(direction)
         {
         }
 
+        [[nodiscard]] static Ray random_in_unit_sphere(Point &p)
+        {
+            return Ray(p, Vector::random_in_unit_sphere());
+        }
+
+        [[nodiscard]] static Ray random_in_unit_sphere_with_direction(Point &p, Vector &direction)
+        {
+            Vector res;
+
+            while (res.dot(direction) <= 0)
+            {
+                res = Vector::random_in_unit_sphere();
+            }
+
+            return Ray(p, res);
+        }
+
         [[nodiscard]] Point position(const float t) const
         {
-            PROFILE_FUNCTION();
-
             return m_origin + m_direction * t;
         }
 
         [[nodiscard]] Ray transform(const Matrix4 &matrix) const
         {
-            PROFILE_FUNCTION();
-
             Point new_origin = matrix * m_origin;
             Vector new_direction = matrix * m_direction;
 
@@ -41,4 +58,4 @@ namespace COAL
         Point m_origin;
         Vector m_direction;
     };
-} // namespace COAL
+} // namespace Karbon

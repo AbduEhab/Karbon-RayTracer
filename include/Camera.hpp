@@ -7,12 +7,12 @@
 #include "Tuples/Vector.hpp"
 #include "World.hpp"
 
-namespace COAL
+namespace Karbon
 {
     struct Camera
     {
 
-        [[nodiscard]] Camera(int width, int height, float fov, Matrix4 transform = COAL::IDENTITY) : m_width(width), m_height(height), m_field_of_view(fov), m_transform(transform)
+        [[nodiscard]] Camera(int width, int height, float fov, Matrix4 transform = Karbon::IDENTITY) : m_width(width), m_height(height), m_field_of_view(fov), m_transform(transform)
         {
             set_pixel_size();
             m_transform = m_transform.inverse();
@@ -75,25 +75,47 @@ namespace COAL
         }
 
         template <size_t width, size_t hight>
-        [[nodiscard]] void classic_render(World &w, Color (&canvas)[width][hight]) const
+        [[nodiscard]] void render(World &w, Color (&canvas)[width][hight]) const
         {
             PROFILE_FUNCTION();
 
             for (int y = 0; y < m_height; y++)
             {
                 std::cout << y << std::endl;
+
                 for (int x = 0; x < m_width; x++)
                 {
-                    Ray r = ray_for_pixel(x, y);
+                    Color c;
 
-                    Color c = w.color_at(r);
+                    if (w.get_samples_per_pixel() == 1)
+                    {
+                        Ray r = ray_for_pixel(x, y);
+
+                        c += w.color_at(r);
+                    }
+                    else
+                    {
+                        for (int i = 0; i < w.get_samples_per_pixel(); i++)
+                        {
+                            int u = (int)(x + random<float>(-2, 2));
+                            int v = (int)(y + random<float>(-2, 2));
+
+                            Ray r = ray_for_pixel(u, v);
+
+                            c += w.color_at(r);
+                        }
+
+                        c *= (1.0f / w.get_samples_per_pixel());
+
+                        c = Color::gamma_correct(c);
+                    }
 
                     canvas[y][x] = c;
                 }
             }
         }
 
-        [[nodiscard]] std::shared_ptr<Color[]> classic_render(const World &w)
+        [[nodiscard]] std::shared_ptr<Color[]> render(const World &w)
         {
             PROFILE_FUNCTION();
 
@@ -111,13 +133,36 @@ namespace COAL
 
                 for (int x = 0; x < m_width; x++)
                 {
-                    Ray r = ray_for_pixel(x, y);
+                    Color c;
 
-                    Color c = w.color_at(r);
+                    if (w.get_samples_per_pixel() == 1)
+                    {
+                        Ray r = ray_for_pixel(x, y);
+
+                        c += w.color_at(r);
+                    }
+                    else
+                    {
+                        for (int i = 0; i < w.get_samples_per_pixel(); i++)
+                        {
+                            int u = (int)(x + random<float>(-2, 2));
+                            int v = (int)(y + random<float>(-2, 2));
+
+                            Ray r = ray_for_pixel(u, v);
+
+                            c += w.color_at(r);
+                        }
+
+                        c *= (1.0f / w.get_samples_per_pixel());
+
+                        c = Color::gamma_correct(c);
+                    }
 
                     image.get()[y * m_width + x] = c;
                 }
             }
+
+            std::cout << "Finished Rendering in " << timer.elapsed() << " seconds" << std::endl;
 
             m_is_finished = true;
 
@@ -126,7 +171,7 @@ namespace COAL
             return image;
         }
 
-        [[nodiscard]] std::shared_ptr<Color[]> classic_render_multi_threaded(const World &w, const int thread_count = kCORE_COUNT)
+        [[nodiscard]] std::shared_ptr<Color[]> render_multi_threaded(const World &w, const int thread_count = kCORE_COUNT)
         {
             PROFILE_FUNCTION();
 
@@ -152,10 +197,41 @@ namespace COAL
 
                         for (int x = 0; x < m_width; x++)
                         {
-                            Ray r = ray_for_pixel(x, y);
+                            Color c;
 
-                            Color c = w.color_at(r);
+                            if (w.get_samples_per_pixel() == 1)
+                            {
+                                Ray r = ray_for_pixel(x, y);
 
+                                c += w.color_at(r);
+                                
+                                c = Color::scale(c, &map_to_range, 0, 255, 0, 1);
+
+                                c = Color::gamma_correct(c);
+
+                                c = Color::scale(c, &map_to_range, 0, 1, 0, 255);
+                            } 
+                            else
+                            {
+                                for (int i = 0; i < w.get_samples_per_pixel(); i++)
+                                {
+                                    int u = (int)(x + random<float>(-2,2));
+                                    int v = (int)(y + random<float>(-2,2));
+
+                                    Ray r = ray_for_pixel(u, v);
+
+                                    c += w.color_at(r);
+                                }
+
+                                c *= (1.0f / w.get_samples_per_pixel());
+
+                                c = Color::scale(c, &map_to_range, 0, 255, 0, 1);
+
+                                c = Color::gamma_correct(c);
+
+                                c = Color::scale(c, &map_to_range, 0, 1, 0, 255);
+                            }
+                            
                             image.get() [y *m_width + x] = c;
                         }
                     } }));
@@ -294,7 +370,7 @@ namespace COAL
             m_rotation_y = rotation[1];
             m_rotation_z = rotation[2];
 
-            m_transform = COAL::IDENTITY.translate(translation[0], translation[1], translation[2]).rotate(m_rotation_x, m_rotation_y, m_rotation_z);
+            m_transform = Karbon::IDENTITY.translate(translation[0], translation[1], translation[2]).rotate(m_rotation_x, m_rotation_y, m_rotation_z);
             m_inverse_transform = m_transform.inverse();
 
             return *this;
@@ -307,7 +383,7 @@ namespace COAL
             m_rotation_y = rotation[1] * (float)std::numbers::pi / 180.0f;
             m_rotation_z = rotation[2] * (float)std::numbers::pi / 180.0f;
 
-            m_transform = COAL::IDENTITY.translate(translation[0], translation[1], translation[2]).rotate(m_rotation_x, m_rotation_y, m_rotation_z);
+            m_transform = Karbon::IDENTITY.translate(translation[0], translation[1], translation[2]).rotate(m_rotation_x, m_rotation_y, m_rotation_z);
             m_inverse_transform = m_transform.inverse();
 
             return *this;
@@ -351,10 +427,10 @@ namespace COAL
         float m_rotation_x = 0;
         float m_rotation_y = 0;
         float m_rotation_z = 0;
-        Matrix4 m_transform = COAL::IDENTITY;
-        Matrix4 m_inverse_transform = COAL::IDENTITY;
+        Matrix4 m_transform = Karbon::IDENTITY;
+        Matrix4 m_inverse_transform = Karbon::IDENTITY;
 
         float m_half_width;
         float m_half_height;
     };
-} // namespace COAL
+} // namespace Karbon
