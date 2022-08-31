@@ -17,12 +17,12 @@ namespace Karbon
         {
         }
 
-        [[nodiscard]] static Ray random_in_unit_sphere(Point &p)
+        [[nodiscard]] static Ray random_in_unit_sphere(const Point &p)
         {
             return Ray(p, Vector::random_in_unit_sphere());
         }
 
-        [[nodiscard]] static Ray random_in_unit_sphere_with_direction(Point &p, Vector &direction)
+        [[nodiscard]] static Ray random_in_unit_sphere_with_direction(const Point &p, const Vector &direction)
         {
             Vector res;
 

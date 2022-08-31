@@ -87,7 +87,7 @@ namespace Karbon
                 {
                     Color c;
 
-                    if (w.get_samples_per_pixel() == 1)
+                    if (w.get_antialiasing_samples() == 1)
                     {
                         Ray r = ray_for_pixel(x, y);
 
@@ -95,7 +95,7 @@ namespace Karbon
                     }
                     else
                     {
-                        for (int i = 0; i < w.get_samples_per_pixel(); i++)
+                        for (int i = 0; i < w.get_antialiasing_samples(); i++)
                         {
                             int u = (int)(x + random<float>(-2, 2));
                             int v = (int)(y + random<float>(-2, 2));
@@ -105,7 +105,7 @@ namespace Karbon
                             c += w.color_at(r);
                         }
 
-                        c *= (1.0f / w.get_samples_per_pixel());
+                        c *= (1.0f / w.get_antialiasing_samples());
 
                         c = Color::gamma_correct(c);
                     }
@@ -135,7 +135,7 @@ namespace Karbon
                 {
                     Color c;
 
-                    if (w.get_samples_per_pixel() == 1)
+                    if (w.get_antialiasing_samples() == 1)
                     {
                         Ray r = ray_for_pixel(x, y);
 
@@ -143,7 +143,7 @@ namespace Karbon
                     }
                     else
                     {
-                        for (int i = 0; i < w.get_samples_per_pixel(); i++)
+                        for (int i = 0; i < w.get_antialiasing_samples(); i++)
                         {
                             int u = (int)(x + random<float>(-2, 2));
                             int v = (int)(y + random<float>(-2, 2));
@@ -153,7 +153,7 @@ namespace Karbon
                             c += w.color_at(r);
                         }
 
-                        c *= (1.0f / w.get_samples_per_pixel());
+                        c *= (1.0f / w.get_antialiasing_samples());
 
                         c = Color::gamma_correct(c);
                     }
@@ -199,12 +199,12 @@ namespace Karbon
                         {
                             Color c;
 
-                            if (w.get_samples_per_pixel() == 1)
+                            if (w.get_antialiasing_samples() == 1)
                             {
                                 Ray r = ray_for_pixel(x, y);
 
                                 c += w.color_at(r);
-                                
+
                                 c = Color::scale(c, &map_to_range, 0, 255, 0, 1);
 
                                 c = Color::gamma_correct(c);
@@ -213,7 +213,7 @@ namespace Karbon
                             } 
                             else
                             {
-                                for (int i = 0; i < w.get_samples_per_pixel(); i++)
+                                for (int i = 0; i < w.get_antialiasing_samples(); i++)
                                 {
                                     int u = (int)(x + random<float>(-2,2));
                                     int v = (int)(y + random<float>(-2,2));
@@ -223,7 +223,7 @@ namespace Karbon
                                     c += w.color_at(r);
                                 }
 
-                                c *= (1.0f / w.get_samples_per_pixel());
+                                c *= (1.0f / w.get_antialiasing_samples());
 
                                 c = Color::scale(c, &map_to_range, 0, 255, 0, 1);
 

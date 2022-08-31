@@ -2,7 +2,7 @@
 
 #include <Constants.hpp>
 #include <Intersection.hpp>
-#include <Material.hpp>
+#include <Materials/Material.hpp>
 #include <Matrix.hpp>
 #include <Ray.hpp>
 #include <Shapes/Shape.hpp>
@@ -16,7 +16,7 @@ namespace Karbon
 
         [[nodiscard]] Sphere() = default;
 
-        [[nodiscard]] Intersection intersects(const Ray &ray) const
+        [[nodiscard]] std::pair<float, Shape *> intersects(const Ray &ray) const
         {
             PROFILE_FUNCTION();
 
@@ -38,11 +38,6 @@ namespace Karbon
             float t1 = (-b - std::sqrt(discriminant)) / (2 * a);
             float t2 = (-b + std::sqrt(discriminant)) / (2 * a);
 
-            // if (t1 > t2)
-            // {
-            //     std::swap(t1, t2);
-            // }
-
             if (t1 < 0)
             {
                 t1 = t2;
@@ -53,7 +48,7 @@ namespace Karbon
                 return {};
             }
 
-            return Intersection(t1, *this);
+            return {t1, (Shape *)this};
         }
 
         [[nodiscard]] Vector normal_at(const Point &p) const override
@@ -87,7 +82,7 @@ namespace Karbon
             j["translation"] = nlohmann::json::parse(get_translation().to_json());
             j["scale"] = nlohmann::json::parse(get_scale().to_json());
             j["rotation"] = nlohmann::json::parse(get_rotations().to_json());
-            j["material"] = nlohmann::json::parse(get_material().to_json());
+            // j["material"] = nlohmann::json::parse(get_material()->to_json());
 
             return j.dump();
         }
@@ -109,14 +104,13 @@ namespace Karbon
 
             sphere->transform(translationf, rotationf, scalef);
 
-            sphere->set_material(Material::from_json(j["material"].dump()));
+            // if (j["material"]["type"] == "Metal")
+            //     sphere->set_material(Metal::from_json(j["material"].dump()));
+            // else if (j["material"]["type"] == "Lambertian")
+            //     sphere->set_material(Lambertian::from_json(j["material"].dump()));
 
             return sphere;
         }
     };
 
-    [[nodiscard]] [[maybe_unused]] static Sphere glass_sphere()
-    {
-        return static_cast<Sphere &>(Sphere().set_material(Material().set_transparency(1.0).set_refractive_index(1.5)));
-    }
 }; // namespace Karbon

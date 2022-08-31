@@ -1,26 +1,6 @@
 #include <Karbon.hpp>
 
-#define setup_world()                                                                                                                                                           \
-                                                                                                                                                                                \
-    auto floor = std::make_shared<Karbon::XZPlane>(Karbon::XZPlane());                                                                                                          \
-    floor->get_material().set_color(Karbon::Color(1.0f, 0.9f, 0.9f)).set_specular(0).set_reflectiveness(0.3f);                                                                  \
-                                                                                                                                                                                \
-    auto middle_sphere = std::make_shared<Karbon::Sphere>(Karbon::Sphere());                                                                                                    \
-    middle_sphere->get_material().set_color(Karbon::Color(0.0f, 0.0f, 0.0f)).set_specular(1).set_diffuse(0.1f).set_reflectiveness(0.3f).set_shininess(300).set_transparency(1); \
-    middle_sphere->translate(-0.5f, 1.0f, 0.5f);                                                                                                                                \
-                                                                                                                                                                                \
-    auto right_sphere = std::make_shared<Karbon::Sphere>(Karbon::Sphere());                                                                                                     \
-    right_sphere->get_material().set_color(Karbon::Color(0.5f, 1.0f, 0.1f)).set_specular(0.3f).set_diffuse(0.7f).set_reflectiveness(0.3f);                                      \
-    right_sphere->translate(1.5f, 0.5f, -0.5f).scale(0.5f, 0.5f, 0.5f);                                                                                                         \
-                                                                                                                                                                                \
-    auto left_sphere = std::make_shared<Karbon::Sphere>(Karbon::Sphere());                                                                                                      \
-    left_sphere->get_material().set_color(Karbon::Color(1, 0.8f, 0.1f)).set_specular(0.3f).set_diffuse(0.7f).set_reflectiveness(0.3f);                                          \
-    left_sphere->translate(-1.5f, 0.33f, -0.75f).scale(0.33f, 0.33f, 0.33f);                                                                                                    \
-                                                                                                                                                                                \
-    auto light = std::make_shared<Karbon::PointLight>(Karbon::PointLight());                                                                                                    \
-    light->set_intensity(Karbon::Color((float)255, (float)255, (float)255)).set_position(Karbon::Point((float)-10, (float)10, (float)-10));
-
-auto scene = Karbon::Scene(Karbon::Camera(800, 600, (float)std::numbers::pi / 3), Karbon::World());
+auto scene = Karbon::Scene(Karbon::Camera(800, 600, (float)std::numbers::pi / 3), Karbon::World(0));
 
 std::shared_ptr<Karbon::Color[]> canvas;
 std::thread render_thread;
@@ -41,7 +21,7 @@ public:
     virtual void OnUIRender() override
     {
 
-        ImGui::ShowDemoWindow();
+        // ImGui::ShowDemoWindow();
 
         ImGui::Begin("World Outline");
         {
@@ -253,29 +233,42 @@ public:
                         {
                             auto shape = shapes[selected];
 
-                            auto color = shape->get_material().get_color();
-                            auto specular = shape->get_material().get_specular();
-                            auto diffuse = shape->get_material().get_diffuse();
-                            auto reflectiveness = shape->get_material().get_reflectiveness();
-                            auto shininess = shape->get_material().get_shininess();
-                            auto ambient = shape->get_material().get_ambient();
-                            auto transparency = shape->get_material().get_transparency();
-                            auto refractive_index = shape->get_material().get_refractive_index();
-                            auto pattern = shape->get_material().get_pattern();
+                            auto color = shape->get_material()->get_color();
+
+                            int item_current = 0;
+
+                            std::string mat_type = shape->get_material()->get_name();
+
+                            if (mat_type == "Metal")
+                            {
+                                item_current = 1;
+                            }
+
+                            const char *items[] = {"Lambertian", "Metal"};
+                            ImGui::Combo("Material Selection:", &item_current, items, IM_ARRAYSIZE(items));
+
+                            switch (item_current)
+                            {
+                            case 0:
+                                shape->set_material(std::make_shared<Karbon::Lambertian>(Karbon::Lambertian()));
+                                break;
+                            case 1:
+                                shape->set_material(std::make_shared<Karbon::Metal>(Karbon::Metal()));
+                                break;
+
+                            default:
+                                debug_print("Invalid material selection");
+                            }
+
+                            auto refractive_index = shape->get_material()->get_refractive_index();
 
                             float color_vec[3] = {color.r, color.g, color.b};
 
                             ImGui::ColorEdit3("Material Color", (float *)&color_vec);
 
-                            ImGui::SliderFloat("Specular", &specular, 0.0f, 1.0f);
-                            ImGui::SliderFloat("Diffuse", &diffuse, 0.0f, 1.0f);
-                            ImGui::SliderFloat("Reflectiveness", &reflectiveness, 0.0f, 1.0f);
-                            ImGui::SliderFloat("Shininess", &shininess, 0.0f, 100.0f);
-                            ImGui::SliderFloat("Ambient", &ambient, 0.0f, 1.0f);
-                            ImGui::SliderFloat("Transparency", &transparency, 0.0f, 1.0f);
                             ImGui::SliderFloat("Refractive Index", &refractive_index, 1.0f, 10.0f);
 
-                            shape->get_material().set_color(color_vec).set_specular(specular).set_diffuse(diffuse).set_reflectiveness(reflectiveness).set_shininess(shininess).set_ambient(ambient).set_transparency(transparency).set_refractive_index(refractive_index);
+                            shape->get_material()->set_color(color_vec).set_refractive_index(refractive_index);
                         }
                         else
                         {
@@ -325,19 +318,19 @@ public:
                 ImGui::Text("Sampling Settings:");
 
                 {
-                    auto render_depth = scene.m_world.get_max_depth();
+                    auto render_depth = scene.m_world.get_max_recurtion_level();
 
-                    ImGui::SliderInt("##Render Depth", &render_depth, 1, 10, "Render Depth : %d");
+                    ImGui::SliderInt("##Render Depth", &render_depth, 1, 100, "Render Depth : %d", ImGuiSliderFlags_Logarithmic);
 
-                    scene.m_world.set_max_depth(render_depth);
+                    scene.m_world.set_max_recurtion_level(render_depth);
                 }
 
                 {
-                    int samples_per_pixel = scene.m_world.get_samples_per_pixel();
+                    int antialiasing_samples = scene.m_world.get_antialiasing_samples();
 
-                    ImGui::SliderInt("##AA samples", &samples_per_pixel, 1, 100, "AA Samples: %d", ImGuiSliderFlags_Logarithmic);
+                    ImGui::SliderInt("##AA samples", &antialiasing_samples, 1, 100, "AA Samples: %d", ImGuiSliderFlags_Logarithmic);
 
-                    scene.m_world.set_samples_per_pixel(samples_per_pixel);
+                    scene.m_world.set_antialiasing_samples(antialiasing_samples);
                 }
 
                 {
@@ -369,7 +362,7 @@ public:
             {
                 Karbon::Timer timer;
 
-                Karbon::save_image(canvas, scene.m_camera.get_width(), scene.m_camera.get_height(), "render.png");
+                Karbon::save_image(canvas, scene.m_camera.get_width(), scene.m_camera.get_height(), "render.jpeg");
 
                 is_file_saved = true;
 
@@ -397,7 +390,8 @@ public:
         ImGui::PopStyleVar();
     }
 
-    void Render()
+    void
+    Render()
     {
         PROFILE_FUNCTION();
 
@@ -451,28 +445,6 @@ private:
 
 Walnut::Application *Walnut::CreateApplication([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
 {
-
-    auto floor = std::make_shared<Karbon::XZPlane>(Karbon::XZPlane());
-    floor->get_material().set_color(Karbon::Color(1.0f, 0.9f, 0.9f)).set_specular(0).set_reflectiveness(0.3f);
-
-    auto middle_sphere = std::make_shared<Karbon::Sphere>(Karbon::Sphere());
-    middle_sphere->get_material().set_color(Karbon::Color(0.0f, 0.0f, 0.0f)).set_specular(1).set_diffuse(0.1f).set_reflectiveness(0.3f).set_shininess(200).set_transparency(1);
-    middle_sphere->translate(-0.5f, 1.0f, 0.5f);
-
-    auto right_sphere = std::make_shared<Karbon::Sphere>(Karbon::Sphere());
-    right_sphere->get_material().set_color(Karbon::Color(0.5f, 1.0f, 0.1f)).set_specular(0.3f).set_diffuse(0.7f).set_reflectiveness(0.3f);
-    right_sphere->translate(1.5f, 0.5f, -0.5f).scale(0.5f, 0.5f, 0.5f);
-
-    auto left_sphere = std::make_shared<Karbon::Sphere>(Karbon::Sphere());
-    left_sphere->get_material().set_color(Karbon::Color(1, 0.8f, 0.1f)).set_specular(0.3f).set_diffuse(0.7f).set_reflectiveness(0.3f);
-    left_sphere->translate(-1.5f, 0.33f, -0.75f).scale(0.33f, 0.33f, 0.33f);
-
-    auto light = std::make_shared<Karbon::PointLight>(Karbon::PointLight());
-    light->set_intensity(Karbon::Color((float)255, (float)255, (float)255)).set_position(Karbon::Point((float)-10, (float)10, (float)-10));
-
-    scene.m_world.add_shapes({floor, middle_sphere, right_sphere, left_sphere});
-    scene.m_world.add_lights({light});
-
     scene.m_camera.transform(Karbon::Point(0, 1.5, -5), Karbon::Point(0, 1, 0), Karbon::Vector(0, 1, 0));
 
     Walnut::ApplicationSpecification spec;
@@ -499,11 +471,6 @@ Walnut::Application *Walnut::CreateApplication([[maybe_unused]] int argc, [[mayb
 int main()
 {
     // Instrumentor::Get().beginSession("main");
-
-    setup_world();
-
-    scene.m_world.add_shapes({floor, middle_sphere, right_sphere, left_sphere});
-    scene.m_world.add_lights({light});
 
     scene.m_camera.transform(Karbon::Point(0, 1.5, -5), Karbon::Point(0, 1, 0), Karbon::Vector(0, 1, 0));
 

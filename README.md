@@ -19,4 +19,4 @@ Visual Studio (not VS Code) will Compile and link perfectly but will fail to cop
 - [L2DFileDialog](https://github.com/Limeoats/L2DFileDialog)
 
 ### Demo Renders
-![Demo 1](https://github.com/AbduEhab/Karbon-RayTracer/blob/main/Renders/render.png)
+![Demo 1](https://github.com/AbduEhab/Karbon-RayTracer/blob/main/Renders/render.jpg)

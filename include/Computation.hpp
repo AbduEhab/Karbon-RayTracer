@@ -55,4 +55,12 @@ namespace Karbon
         float m_n2;
         Point m_under_point;
     };
+
+    bool Lambertian::scatter(const Ray &r_in, const Computation &comp, Color &attenuation, Ray &scattered) const
+    {
+        scattered = Ray::random_in_unit_sphere_with_direction(comp.m_over_point, comp.m_normal_vector);
+        attenuation = get_color();
+        return true;
+    }
+
 } // namespace Karbon

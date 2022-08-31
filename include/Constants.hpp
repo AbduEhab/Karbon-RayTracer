@@ -25,6 +25,8 @@
 #include <utility>
 #include <vector>
 
+#include "json.hpp"
+
 #define PROFILING 0
 
 #include "Profiling/Instrumentor.hpp"

@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Constants.hpp"
-#include "Intersection.hpp"
-#include "Material.hpp"
+#include "Materials/Lambertian.hpp"
+#include "Materials/Material.hpp"
 #include "Matrix.hpp"
 #include "Ray.hpp"
 #include "Tuples/Point.hpp"
@@ -11,24 +11,22 @@
 namespace Karbon
 {
 
-    struct Intersection;
-
     struct Shape
     {
 
-        [[nodiscard]] virtual Intersection intersects(const Ray &ray) const = 0;
+        [[nodiscard]] virtual std::pair<float, Shape*> intersects(const Ray &ray) const = 0;
 
         virtual ~Shape() = default;
 
         [[nodiscard]] virtual Vector normal_at(const Point &p) const = 0;
 
         // setters and getters
-        [[nodiscard]] const Material &get_material() const
+        [[nodiscard]] const std::shared_ptr<Material> &get_material() const
         {
             return m_material;
         }
 
-        [[nodiscard]] Material &get_material()
+        [[nodiscard]] constexpr std::shared_ptr<Material> &get_material()
         {
             return m_material;
         }
@@ -56,7 +54,7 @@ namespace Karbon
         // abstract equality
         [[nodiscard]] virtual bool operator==(const Shape &other) const = 0;
 
-        Shape &set_material(const Material &material)
+        Shape &set_material(const std::shared_ptr<Karbon::Material> &material)
         {
             m_material = material;
 
@@ -233,7 +231,7 @@ namespace Karbon
 
     private:
         // private:
-        Karbon::Material m_material = Karbon::Material();
+        std::shared_ptr<Material> m_material = std::make_shared<Lambertian>(Lambertian(Color(0.5f, 0.5f, 0.5f)));
         Karbon::Matrix4 m_transform = Karbon::IDENTITY;
         Karbon::Matrix4 m_inverse_transform = Karbon::IDENTITY;
         Karbon::Matrix4 m_normal_transform = Karbon::IDENTITY;
@@ -244,15 +242,5 @@ namespace Karbon
         float m_rotation_y = 0;
         float m_rotation_z = 0;
     };
-
-    [[nodiscard]] Karbon::Color Pattern::colot_at(const Shape &s, const Karbon::Point &p) const
-    {
-        PROFILE_FUNCTION();
-
-        Point object_point = s.get_transform().inverse() * p;
-        Point pattern_point = m_transform.inverse() * object_point;
-
-        return color_at(pattern_point);
-    }
 
 } // namespace Karbon

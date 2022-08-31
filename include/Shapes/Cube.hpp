@@ -1,8 +1,7 @@
 #pragma once
 
 #include <Constants.hpp>
-#include <Intersection.hpp>
-#include <Material.hpp>
+#include <Materials/Material.hpp>
 #include <Matrix.hpp>
 #include <Ray.hpp>
 #include <Shapes/Shape.hpp>
@@ -16,7 +15,7 @@ namespace Karbon
 
         [[nodiscard]] Cube() = default;
 
-        [[nodiscard]] Intersection intersects(const Ray &ray) const
+        [[nodiscard]] std::pair<float, Shape *> intersects(const Ray &ray) const
         {
             PROFILE_FUNCTION();
 
@@ -57,7 +56,7 @@ namespace Karbon
             if (tmin > tmax)
                 return {};
 
-            return {tmin, *this};
+            return {tmin, (Shape *)this};
         }
 
         [[nodiscard]] Vector normal_at(const Point &p) const override
@@ -99,7 +98,7 @@ namespace Karbon
             j["translation"] = nlohmann::json::parse(get_translation().to_json());
             j["scale"] = nlohmann::json::parse(get_scale().to_json());
             j["rotation"] = nlohmann::json::parse(get_rotations().to_json());
-            j["material"] = nlohmann::json::parse(get_material().to_json());
+            // j["material"] = nlohmann::json::parse(get_material()->to_json());
 
             return j.dump();
         }
@@ -121,7 +120,10 @@ namespace Karbon
 
             cube->transform(translationf, rotationf, scalef);
 
-            cube->set_material(Material::from_json(j["material"].dump()));
+            // if (j["material"]["type"] == "Metal")
+            //     cube->set_material(Metal::from_json(j["material"].dump()));
+            // else if (j["material"]["type"] == "Lambertian")
+            //     cube->set_material(Lambertian::from_json(j["material"].dump()));
 
             return cube;
         }

@@ -19,7 +19,7 @@ namespace Karbon
         {
         }
 
-        [[nodiscard]] Computation prepare_computation(const Ray &ray, const std::vector<Intersection> &xs) const
+        [[nodiscard]] Computation prepare_computation(const Ray &ray, const std::vector<std::pair<float, Karbon::Shape *>> xs) const
         {
             PROFILE_FUNCTION();
 
@@ -48,31 +48,50 @@ namespace Karbon
             {
                 std::deque<const Karbon::Shape *> shape_deque;
 
-                for (const Karbon::Intersection &intersection : xs)
+                for (const std::pair<float, Karbon::Shape *> intersection : xs)
                 {
-                    if (intersection == *this)
+                    if (equals(intersection))
                         if (shape_deque.empty())
                             n1 = 1;
                         else
-                            n1 = shape_deque.back()->get_material().get_refractive_index();
+                            n1 = shape_deque.back()->get_material()->get_refractive_index();
 
-                    if (contains(shape_deque, *intersection.m_object))
-                        remove(shape_deque, *intersection.m_object);
+                    if (contains(shape_deque, *intersection.second))
+                        remove(shape_deque, *intersection.second);
                     else
-                        shape_deque.emplace_back(intersection.m_object);
+                        shape_deque.emplace_back(intersection.second);
 
-                    if (intersection == *this)
+                    if (equals(intersection))
                     {
                         if (shape_deque.empty())
                             n2 = 1;
                         else
-                            n2 = shape_deque.back()->get_material().get_refractive_index();
+                            n2 = shape_deque.back()->get_material()->get_refractive_index();
                         break;
                     }
                 }
             }
 
             return Computation(t2, *object, p, eyev, normalv, inside, over_point, reflectv, n1, n2, under_point);
+        }
+
+        // == operator overload
+        [[nodiscard]] constexpr bool equals(const std::pair<float, Karbon::Shape *> &right) const noexcept
+        {
+            return m_t == right.first && m_object == right.second;
+        }
+
+        [[nodiscard]] static std::pair<float, Shape *> hit(std::vector<std::pair<float, Shape *>> intersections)
+        {
+            PROFILE_FUNCTION();
+
+            for (const std::pair<float, Shape *> &intersection : intersections)
+            {
+                if (intersection.first > 0)
+                    return intersection;
+            }
+
+            return {};
         }
 
         [[nodiscard]] static Intersection hit(std::vector<Intersection> intersections)
@@ -131,10 +150,4 @@ namespace Karbon
         const Shape *m_object;
     };
 
-    struct intersection_return_type
-    {
-
-        Intersection i1;
-        Intersection i2;
-    };
 } // namespace Karbon

@@ -14,20 +14,22 @@
 #include "Lights/Light.hpp"
 #include "Lights/PointLight.hpp"
 
+#include "Computation.hpp"
+
 #include "Intersection.hpp"
 
-#include "Shapes/Cube.hpp"
+#include "Materials/Material.hpp"
+
+#include "Materials/Lambertian.hpp"
+#include "Materials/Metal.hpp"
+
 #include "Shapes/Shape.hpp"
+
+#include "Shapes/Cube.hpp"
 #include "Shapes/Sphere.hpp"
 #include "Shapes/XYPlane.hpp"
 #include "Shapes/XZPlane.hpp"
 #include "Shapes/YZPlane.hpp"
-
-#include "Patterns/Pattern.hpp"
-
-#include "Material.hpp"
-
-#include "Computation.hpp"
 
 #include "Camera.hpp"
 #include "World.hpp"

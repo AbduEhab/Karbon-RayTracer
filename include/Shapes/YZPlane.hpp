@@ -2,7 +2,7 @@
 
 #include <Constants.hpp>
 #include <Intersection.hpp>
-#include <Material.hpp>
+#include <Materials/Material.hpp>
 #include <Ray.hpp>
 #include <Tuples/Point.hpp>
 #include <Tuples/Vector.hpp>
@@ -13,7 +13,7 @@ namespace Karbon
     {
         [[nodiscard]] YZPlane() = default;
 
-        [[nodiscard]] Intersection intersects(const Ray &ray) const
+        [[nodiscard]] std::pair<float, Shape*> intersects(const Ray &ray) const
         {
 
             PROFILE_FUNCTION();
@@ -32,7 +32,7 @@ namespace Karbon
                 return {};
             }
 
-            return Intersection(t, *this);
+            return {t, (Shape *)this};
         }
 
         [[nodiscard]] Vector normal_at([[maybe_unused]] const Point &p) const override
@@ -64,7 +64,7 @@ namespace Karbon
             j["translation"] = nlohmann::json::parse(get_translation().to_json());
             j["scale"] = nlohmann::json::parse(get_scale().to_json());
             j["rotation"] = nlohmann::json::parse(get_rotations().to_json());
-            j["material"] = nlohmann::json::parse(get_material().to_json());
+            // j["material"] = nlohmann::json::parse(get_material()->to_json());
 
             return j.dump(4);
         }
@@ -86,7 +86,10 @@ namespace Karbon
 
             YZ_plane->transform(translationf, rotationf, scalef);
 
-            YZ_plane->set_material(Material::from_json(j["material"].dump()));
+            // if (j["material"]["type"] == "Metal")
+            //     YZ_plane->set_material(Metal::from_json(j["material"].dump()));
+            // else if (j["material"]["type"] == "Lambertian")
+            //     YZ_plane->set_material(Lambertian::from_json(j["material"].dump()));
 
             return YZ_plane;
         }

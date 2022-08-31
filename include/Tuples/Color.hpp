@@ -10,11 +10,12 @@ namespace Karbon
         [[nodiscard]] constexpr Color() : r(0), g(0), b(0), a(0xff){};
 
         [[nodiscard]] constexpr Color(float red, float green, float blue, int alpha = 0xff)
-            : r(red > 255 ? 255 : red), g(green > 255 ? 255 : green), b(blue > 255 ? 255 : blue), a(alpha > 255 ? 255 : alpha){};
+            : r(std::clamp(red, 0.0f, 255.0f)), g(std::clamp(green, 0.0f, 255.0f)), b(std::clamp(blue, 0.0f, 255.0f)), a(std::clamp(alpha, 0, 255)){};
 
-        [[nodiscard]] constexpr Color(const float (&color_array)[3]) : r(color_array[0] > 255 ? 255 : color_array[0]), g(color_array[1] > 255 ? 255 : color_array[1]), b(color_array[2] > 255 ? 255 : color_array[2]), a(0xff){};
-
-        [[nodiscard]] constexpr Color(const float (&color_array)[4]) : r(color_array[0] > 255 ? 255 : color_array[0]), g(color_array[1] > 255 ? 255 : color_array[1]), b(color_array[2] > 255 ? 255 : color_array[3]), a(color_array[3] > 255 ? 255 : (int)color_array[3]){};
+        [[nodiscard]] constexpr Color(const float (&color_array)[3]) : r(std::clamp(color_array[0], 0.0f, 255.0f)), g(std::clamp(color_array[1], 0.0f, 255.0f)), b(std::clamp(color_array[2], 0.0f, 255.0f)), a(0xff){};
+        [[nodiscard]] constexpr Color(const float (&color_array)[4]) : r(std::clamp(color_array[0], 0.0f, 255.0f)), g(std::clamp(color_array[1], 0.0f, 255.0f)), b(std::clamp(color_array[2], 0.0f, 255.0f)), a((int)std::clamp(color_array[3], 0.0f, 255.0f)){};
+        [[nodiscard]] constexpr Color(const std::array<float, 3> &color_array) : r(std::clamp(color_array[0], 0.0f, 255.0f)), g(std::clamp(color_array[1], 0.0f, 255.0f)), b(std::clamp(color_array[2], 0.0f, 255.0f)), a(0xff){};
+        [[nodiscard]] constexpr Color(const std::array<float, 4> &color_array) : r(std::clamp(color_array[0], 0.0f, 255.0f)), g(std::clamp(color_array[1], 0.0f, 255.0f)), b(std::clamp(color_array[2], 0.0f, 255.0f)), a((int)std::clamp(color_array[3], 0.0f, 255.0f)){};
 
         [[nodiscard]] static constexpr Color create_SDR(float r, float g, float b) noexcept
         {
