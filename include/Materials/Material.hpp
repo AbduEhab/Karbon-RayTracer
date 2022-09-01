@@ -41,13 +41,11 @@ namespace Karbon
             return *this;
         }
 
-        // get get_refractive_index
         [[nodiscard]] constexpr float get_refractive_index() const noexcept
         {
             return m_refractive_index;
         }
 
-        // set get_refractive_index
         constexpr Material &set_refractive_index(const float refractive_index) noexcept
         {
             m_refractive_index = refractive_index;

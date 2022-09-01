@@ -4,6 +4,8 @@
 #include "Ray.hpp"
 #include "Tuples/Color.hpp"
 
+#include "json.hpp"
+
 #include "Computation.hpp"
 
 namespace Karbon
@@ -12,14 +14,21 @@ namespace Karbon
     struct Metal : public Material
     {
 
-        [[nodiscard]] constexpr Metal(const Color &c = Color(1.0, 1.0, 1.0))
+        [[nodiscard]] constexpr Metal(const Color &c = Color(1.0, 1.0, 1.0), const float roughness = 0.0)
         {
             set_color(c);
+            set_roughness(roughness);
+        }
+
+        [[nodiscard]] constexpr Metal(const Metal &other)
+        {
+            set_color(other.get_color());
+            m_roughness = other.m_roughness;
         }
 
         bool scatter(const Ray &r_in, const Computation &comp, Color &attenuation, Ray &scattered) const
         {
-            scattered = Ray(comp.m_over_point, comp.m_reflection_vector);
+            scattered = Ray(comp.m_over_point, comp.m_reflection_vector + m_roughness * Vector::random_in_unit_sphere());
             attenuation = get_color();
             return (scattered.m_direction.dot(comp.m_normal_vector) > 0);
         }
@@ -35,7 +44,6 @@ namespace Karbon
             nlohmann::json j;
             j["type"] = "Metal";
             j["color"] = nlohmann::json::parse(get_color().to_json());
-            j["refractive_index"] = get_refractive_index();
             return j.dump();
         }
 
@@ -51,5 +59,20 @@ namespace Karbon
 
             return mat;
         }
+
+        // setters and getters
+        [[nodiscard]] float get_roughness()
+        {
+            return m_roughness;
+        }
+
+        constexpr Metal &set_roughness(float s)
+        {
+            m_roughness = s;
+            return *this;
+        }
+
+    private:
+        float m_roughness = 0;
     };
 };

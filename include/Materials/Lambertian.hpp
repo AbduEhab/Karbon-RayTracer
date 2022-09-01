@@ -4,6 +4,8 @@
 #include "Ray.hpp"
 #include "Tuples/Color.hpp"
 
+#include "json.hpp"
+
 #include "Computation.hpp"
 
 namespace Karbon
@@ -17,8 +19,12 @@ namespace Karbon
             set_color(c);
         }
 
+        [[nodiscard]] constexpr Lambertian(const Lambertian &other)
+        {
+            set_color(other.get_color());
+        }
+
         bool scatter(const Ray &r_in, const Computation &comp, Color &attenuation, Ray &scattered) const;
-        
 
         [[nodiscard]] virtual const char *get_name() const
         {
@@ -31,7 +37,6 @@ namespace Karbon
             nlohmann::json j;
             j["type"] = "Lambertian";
             j["color"] = nlohmann::json::parse(get_color().to_json());
-            j["refractive_index"] = get_refractive_index();
             return j.dump();
         }
 

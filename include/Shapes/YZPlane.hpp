@@ -13,7 +13,7 @@ namespace Karbon
     {
         [[nodiscard]] YZPlane() = default;
 
-        [[nodiscard]] std::pair<float, Shape*> intersects(const Ray &ray) const
+        [[nodiscard]] std::pair<float, Shape *> intersects(const Ray &ray) const
         {
 
             PROFILE_FUNCTION();
@@ -86,10 +86,10 @@ namespace Karbon
 
             YZ_plane->transform(translationf, rotationf, scalef);
 
-            // if (j["material"]["type"] == "Metal")
-            //     YZ_plane->set_material(Metal::from_json(j["material"].dump()));
-            // else if (j["material"]["type"] == "Lambertian")
-            //     YZ_plane->set_material(Lambertian::from_json(j["material"].dump()));
+            if (j["material"]["type"] == "Metal")
+                YZ_plane->set_material(Metal::from_json(j["material"].dump()));
+            else if (j["material"]["type"] == "Lambertian")
+                YZ_plane->set_material(Lambertian::from_json(j["material"].dump()));
 
             return YZ_plane;
         }

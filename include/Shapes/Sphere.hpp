@@ -104,10 +104,10 @@ namespace Karbon
 
             sphere->transform(translationf, rotationf, scalef);
 
-            // if (j["material"]["type"] == "Metal")
-            //     sphere->set_material(Metal::from_json(j["material"].dump()));
-            // else if (j["material"]["type"] == "Lambertian")
-            //     sphere->set_material(Lambertian::from_json(j["material"].dump()));
+            if (j["material"]["type"] == "Metal")
+                sphere->set_material(Metal::from_json(j["material"].dump()));
+            else if (j["material"]["type"] == "Lambertian")
+                sphere->set_material(Lambertian::from_json(j["material"].dump()));
 
             return sphere;
         }

@@ -86,10 +86,10 @@ namespace Karbon
 
             XY_plane->transform(translationf, rotationf, scalef);
 
-            // if (j["material"]["type"] == "Metal")
-            //     XY_plane->set_material(Metal::from_json(j["material"].dump()));
-            // else if (j["material"]["type"] == "Lambertian")
-            //     XY_plane->set_material(Lambertian::from_json(j["material"].dump()));
+            if (j["material"]["type"] == "Metal")
+                XY_plane->set_material(Metal::from_json(j["material"].dump()));
+            else if (j["material"]["type"] == "Lambertian")
+                XY_plane->set_material(Lambertian::from_json(j["material"].dump()));
 
             return XY_plane;
         }

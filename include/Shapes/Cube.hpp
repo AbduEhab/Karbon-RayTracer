@@ -120,10 +120,10 @@ namespace Karbon
 
             cube->transform(translationf, rotationf, scalef);
 
-            // if (j["material"]["type"] == "Metal")
-            //     cube->set_material(Metal::from_json(j["material"].dump()));
-            // else if (j["material"]["type"] == "Lambertian")
-            //     cube->set_material(Lambertian::from_json(j["material"].dump()));
+            if (j["material"]["type"] == "Metal")
+                cube->set_material(Metal::from_json(j["material"].dump()));
+            else if (j["material"]["type"] == "Lambertian")
+                cube->set_material(Lambertian::from_json(j["material"].dump()));
 
             return cube;
         }

@@ -15,6 +15,8 @@ std::thread render_thread;
 
 #include <L2DFileDialog.h>
 
+#include "Materials/Metal.hpp"
+
 class MainLayer : public Walnut::Layer
 {
 public:
@@ -233,42 +235,71 @@ public:
                         {
                             auto shape = shapes[selected];
 
-                            auto color = shape->get_material()->get_color();
-
                             int item_current = 0;
 
-                            std::string mat_type = shape->get_material()->get_name();
+                            auto mat_type = shape->get_material();
 
-                            if (mat_type == "Metal")
+                            if (!strcmp(mat_type->get_name(), "Metal"))
                             {
                                 item_current = 1;
                             }
+                            else if (!strcmp(mat_type->get_name(), "Dielectric"))
+                            {
+                                item_current = 2;
+                            }
 
-                            const char *items[] = {"Lambertian", "Metal"};
+                            const char *items[] = {"Lambertian", "Metal", "Dielectric"};
                             ImGui::Combo("Material Selection:", &item_current, items, IM_ARRAYSIZE(items));
+
+                            float roughness = 0;
+                            float ref_idx = 1.05f;
 
                             switch (item_current)
                             {
                             case 0:
-                                shape->set_material(std::make_shared<Karbon::Lambertian>(Karbon::Lambertian()));
+                                if (strcmp(mat_type->get_name(), "Dielectric")) [[likely]]
+                                    shape->set_material(std::make_shared<Karbon::Lambertian>(Karbon::Lambertian(*(Karbon::Lambertian *)mat_type.get())));
+                                else [[unlikely]]
+                                    shape->set_material(std::make_shared<Karbon::Lambertian>(Karbon::Lambertian()));
+
                                 break;
                             case 1:
-                                shape->set_material(std::make_shared<Karbon::Metal>(Karbon::Metal()));
-                                break;
+                                if (strcmp(mat_type->get_name(), "Dielectric")) [[likely]]
+                                    shape->set_material(std::make_shared<Karbon::Metal>(Karbon::Metal(*(Karbon::Metal *)mat_type.get())));
+                                else [[unlikely]]
+                                    shape->set_material(std::make_shared<Karbon::Metal>(Karbon::Metal()));
 
+                                roughness = ((Karbon::Metal *)shape->get_material().get())->get_roughness();
+
+                                ImGui::SliderFloat("Roughness", &roughness, 0.0f, 1.0f);
+
+                                ((Karbon::Metal *)shape->get_material().get())->set_roughness(roughness);
+
+                                break;
+                            case 2:
+                                if (strcmp(mat_type->get_name(), "Dielectric")) [[likely]]
+                                    shape->set_material(std::make_shared<Karbon::Dielectric>(Karbon::Dielectric(*(Karbon::Dielectric *)mat_type.get())));
+                                else [[unlikely]]
+                                    shape->set_material(std::make_shared<Karbon::Dielectric>(Karbon::Dielectric()));
+
+                                ref_idx = shape->get_material().get()->get_refractive_index();
+
+                                ImGui::SliderFloat("Refractive Index", &ref_idx, 1.05f, 3.0f);
+
+                                shape->get_material().get()->set_refractive_index(ref_idx);
+
+                                break;
                             default:
                                 debug_print("Invalid material selection");
                             }
 
-                            auto refractive_index = shape->get_material()->get_refractive_index();
+                            auto color = shape->get_material()->get_color();
 
                             float color_vec[3] = {color.r, color.g, color.b};
 
                             ImGui::ColorEdit3("Material Color", (float *)&color_vec);
 
-                            ImGui::SliderFloat("Refractive Index", &refractive_index, 1.0f, 10.0f);
-
-                            shape->get_material()->set_color(color_vec).set_refractive_index(refractive_index);
+                            shape->get_material()->set_color(color_vec);
                         }
                         else
                         {
@@ -333,14 +364,6 @@ public:
                     scene.m_world.set_antialiasing_samples(antialiasing_samples);
                 }
 
-                {
-                    int light_samples_per_pixel = scene.m_world.get_light_samples_per_pixel();
-
-                    ImGui::SliderInt("##Light Samples", &light_samples_per_pixel, 1, 100, "Light Samples: %f", ImGuiSliderFlags_Logarithmic);
-
-                    scene.m_world.set_light_samples_per_pixel(light_samples_per_pixel);
-                }
-
                 ImGui::TreePop(); // Render Settings
             }
         }
@@ -362,7 +385,7 @@ public:
             {
                 Karbon::Timer timer;
 
-                Karbon::save_image(canvas, scene.m_camera.get_width(), scene.m_camera.get_height(), "render.jpeg");
+                Karbon::save_image(canvas, scene.m_camera.get_width(), scene.m_camera.get_height(), "render.jpg");
 
                 is_file_saved = true;
 
@@ -390,8 +413,7 @@ public:
         ImGui::PopStyleVar();
     }
 
-    void
-    Render()
+    void Render()
     {
         PROFILE_FUNCTION();
 

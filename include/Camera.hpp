@@ -57,7 +57,7 @@ namespace Karbon
             m_inverse_transform = m_transform.inverse();
         }
 
-        [[nodiscard]] Ray ray_for_pixel(int x, int y) const
+        [[nodiscard]] Ray ray_for_pixel(float x, float y) const
         {
             PROFILE_FUNCTION();
 
@@ -71,7 +71,7 @@ namespace Karbon
             Point origin = m_inverse_transform * Point(0, 0, 0);
             Vector direction = (pixel - origin).normalize();
 
-            return Ray(origin, direction);
+            return Ray(origin , direction);
         }
 
         template <size_t width, size_t hight>
@@ -89,7 +89,7 @@ namespace Karbon
 
                     if (w.get_antialiasing_samples() == 1)
                     {
-                        Ray r = ray_for_pixel(x, y);
+                        Ray r = ray_for_pixel((float)x, (float)y);
 
                         c += w.color_at(r);
                     }
@@ -97,8 +97,8 @@ namespace Karbon
                     {
                         for (int i = 0; i < w.get_antialiasing_samples(); i++)
                         {
-                            int u = (int)(x + random<float>(-2, 2));
-                            int v = (int)(y + random<float>(-2, 2));
+                            float u = (x + random<float>(-1, 1));
+                            float v = (y + random<float>(-1, 1));
 
                             Ray r = ray_for_pixel(u, v);
 
@@ -137,7 +137,7 @@ namespace Karbon
 
                     if (w.get_antialiasing_samples() == 1)
                     {
-                        Ray r = ray_for_pixel(x, y);
+                        Ray r = ray_for_pixel((float)x, (float)y);
 
                         c += w.color_at(r);
                     }
@@ -145,8 +145,8 @@ namespace Karbon
                     {
                         for (int i = 0; i < w.get_antialiasing_samples(); i++)
                         {
-                            int u = (int)(x + random<float>(-2, 2));
-                            int v = (int)(y + random<float>(-2, 2));
+                            float u = (x + random<float>(-1, 1));
+                            float v = (y + random<float>(-1, 1));
 
                             Ray r = ray_for_pixel(u, v);
 
@@ -201,7 +201,7 @@ namespace Karbon
 
                             if (w.get_antialiasing_samples() == 1)
                             {
-                                Ray r = ray_for_pixel(x, y);
+                                Ray r = ray_for_pixel((float)x, (float)y);
 
                                 c += w.color_at(r);
 
@@ -215,8 +215,8 @@ namespace Karbon
                             {
                                 for (int i = 0; i < w.get_antialiasing_samples(); i++)
                                 {
-                                    int u = (int)(x + random<float>(-2,2));
-                                    int v = (int)(y + random<float>(-2,2));
+                                    float u = (x + random<float>(-1,1));
+                                    float v = (y + random<float>(-1,1));
 
                                     Ray r = ray_for_pixel(u, v);
 

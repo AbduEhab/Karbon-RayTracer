@@ -24,7 +24,7 @@ namespace Karbon
 
         [[nodiscard]] static Ray random_in_unit_sphere_with_direction(const Point &p, const Vector &direction)
         {
-            Vector res;
+            Vector res = Vector::random_in_unit_sphere();
 
             while (res.dot(direction) <= 0)
             {

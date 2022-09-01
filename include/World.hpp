@@ -87,9 +87,7 @@ namespace Karbon
                 if (hit.second->get_material()->scatter(ray, comp, attenuation, scattered))
                     return attenuation * color_at(scattered, recurtion_level + 1);
 
-                Ray rand_ray = Ray::random_in_unit_sphere_with_direction(comp.m_over_point, comp.m_normal_vector);
-
-                return 0.5 * color_at(rand_ray, recurtion_level + 1);
+                return Karbon::BLACK;
             }
 
             const float t = (float)(0.5 * (float)(ray.m_direction.y + 1.0));
@@ -194,18 +192,6 @@ namespace Karbon
             antialiasing_samples = new_samples_per_pixel;
         }
 
-        // get Samples Per Light
-        int get_light_samples_per_pixel() const
-        {
-            return light_samples_per_pixel;
-        }
-
-        // set Samples Per Light
-        void set_light_samples_per_pixel(const int new_light_samples_per_pixel)
-        {
-            light_samples_per_pixel = new_light_samples_per_pixel;
-        }
-
         // serialize all data to a nlohmann json string object
         [[nodiscard]] std::string to_json() const noexcept
         {
@@ -214,8 +200,6 @@ namespace Karbon
             json["max_recurtion_level"] = max_recurtion_level;
 
             json["antialiasing_samples"] = antialiasing_samples;
-
-            json["light_samples_per_pixel"] = light_samples_per_pixel;
 
             nlohmann::json lights_json;
             for (const auto &light : m_lights)
@@ -242,8 +226,6 @@ namespace Karbon
             max_recurtion_level = json["max_recurtion_level"];
 
             antialiasing_samples = json["antialiasing_samples"];
-
-            light_samples_per_pixel = json["light_samples_per_pixel"];
 
             for (const auto &light_json : json["lights"])
             {
@@ -274,7 +256,6 @@ namespace Karbon
 
         int max_recurtion_level = 7;
         int antialiasing_samples = 1;
-        int light_samples_per_pixel = 1;
     };
 
 } // namespace Karbon

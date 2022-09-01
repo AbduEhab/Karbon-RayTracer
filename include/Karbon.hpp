@@ -20,6 +20,7 @@
 
 #include "Materials/Material.hpp"
 
+#include "Materials/Dielectric.hpp"
 #include "Materials/Lambertian.hpp"
 #include "Materials/Metal.hpp"
 
