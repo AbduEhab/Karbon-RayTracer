@@ -71,7 +71,7 @@ namespace Karbon
             Point origin = m_inverse_transform * Point(0, 0, 0);
             Vector direction = (pixel - origin).normalize();
 
-            return Ray(origin , direction);
+            return Ray(origin, direction);
         }
 
         template <size_t width, size_t hight>
@@ -121,7 +121,7 @@ namespace Karbon
 
             m_is_finished = false;
 
-            debug_print("Started Single-Threaded Rendering");
+            debug_print("[RENDERER]: ", "Started Single-Threaded Rendering");
 
             Timer timer;
 
@@ -129,7 +129,7 @@ namespace Karbon
 
             for (int y = 0; y < m_height; y++)
             {
-                debug_print(">> Thread {" + std::to_string(y + 1) + "}: Calculating Row: [" + std::to_string(y + 1) + '/' + std::to_string(m_height) + "]");
+                debug_print("[RENDERER]: ", "Thread {" + std::to_string(y + 1) + "}: Calculating Row: [" + std::to_string(y + 1) + '/' + std::to_string(m_height) + "]");
 
                 for (int x = 0; x < m_width; x++)
                 {
@@ -166,7 +166,7 @@ namespace Karbon
 
             m_is_finished = true;
 
-            debug_print("Single-Threaded Rendering done in: " + std::to_string(timer.elapsed_millis()) + " ms");
+            debug_print("[RENDERER]: ", "Single-Threaded Rendering done in: " + std::to_string(timer.elapsed_millis()) + " ms");
 
             return image;
         }
@@ -177,7 +177,7 @@ namespace Karbon
 
             m_is_finished = false;
 
-            debug_print("Started Multi-Threaded Rendering");
+            debug_print("[RENDERER]: ", "Started Multi-Threaded Rendering");
 
             Timer timer;
 
@@ -193,7 +193,7 @@ namespace Karbon
                                               {
                     for (int y = index; y < m_height; y += thread_count)
                     {
-                        debug_print(">> Thread {" + std::to_string(index + 1) + "}: Calculating Row: [" + std::to_string(y + 1) + '/' + std::to_string(m_height) + "]");
+                        debug_print("[RENDERER]: ","Thread {" + std::to_string(index + 1) + "}: Calculating Row: [" + std::to_string(y + 1) + '/' + std::to_string(m_height) + "]");
 
                         for (int x = 0; x < m_width; x++)
                         {
@@ -242,7 +242,7 @@ namespace Karbon
 
             m_is_finished = true;
 
-            debug_print("Multi-Threaded Rendering done in: " + std::to_string(timer.elapsed_millis()) + " ms");
+            debug_print("[RENDERER]: ", "Multi-Threaded Rendering done in: " + std::to_string(timer.elapsed_millis()) + " ms");
 
             return image;
         }

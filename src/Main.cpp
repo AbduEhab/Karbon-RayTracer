@@ -290,7 +290,7 @@ public:
 
                                 break;
                             default:
-                                debug_print("Invalid material selection");
+                                debug_print("[UI]: ", "Invalid material selection");
                             }
 
                             auto color = shape->get_material()->get_color();

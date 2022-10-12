@@ -12,7 +12,7 @@ namespace Karbon
     {
         PROFILE_FUNCTION();
 
-        debug_print(std::string("Reading file: ") + filepath);
+        debug_print("[IO]: ", std::string("Reading file: ") + filepath);
 
         std::string result;
         std::ifstream in(filepath, std::ios::in | std::ios::binary);
@@ -30,13 +30,13 @@ namespace Karbon
             else
             {
                 // ToDO: handle failure to read from file
-                debug_print(-1);
+                debug_print("[IO]: ", -1);
             }
         }
         else
         {
             // ToDO: handle failure to open file
-            debug_print(-2);
+            debug_print("[IO]: ", -2);
         }
 
         return result;
@@ -59,14 +59,14 @@ namespace Karbon
             else
             { // handle empty string case
 
-                debug_print("failed to Write to file (cannot write empty string)");
+                debug_print("[IO]: ", "failed to Write to file (cannot write empty string)");
                 return -1;
             }
         }
         else
         { // handle failure to open file
 
-            debug_print("failed to Write to file (cannot open file)");
+            debug_print("[IO]: ", "failed to Write to file (cannot open file)");
             return -2;
         }
 
@@ -92,7 +92,7 @@ namespace Karbon
     {
         PROFILE_FUNCTION();
 
-        debug_print("Saving image");
+        debug_print("[IO]: ", "Saving image");
 
         uint8_t *pixels = new uint8_t[width * height * 3];
 
@@ -113,11 +113,11 @@ namespace Karbon
 
         if (result == 0)
         {
-            debug_print("failed to save image");
+            debug_print("[IO]: ", "failed to save image");
             return -1;
         }
 
-        debug_print("image saved");
+        debug_print("[IO]: ", "image saved");
         return 1;
     }
 
