@@ -467,7 +467,7 @@ private:
 
 Walnut::Application *Walnut::CreateApplication([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
 {
-    Karbon::Instrumentor::Get().beginSession("Main");
+    Instrumentor::Get().beginSession("Main");
 
     scene.m_camera.transform(Karbon::Point(0, 1.5, -5), Karbon::Point(0, 1, 0), Karbon::Vector(0, 1, 0));
 

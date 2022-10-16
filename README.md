@@ -10,8 +10,7 @@ Fully supports Windows (full UI and stuff) - NOW SUPPORTS GCC (tested on windows
 - x64 Compiler (DOES NOT WORK WITH x86 COMPILERS!!!)
 
 ## Getting Started
-Once you've cloned the repo, setup cmake with `cmake -S . -B build`. If you're using CMake with VS Code, the binaries should be automatically copied in to the bin folder (no mater the build config). 
-Visual Studio (not VS Code) will Compile and link perfectly but will fail to copy the binary which would give you a "Build failed. do you want to start anyway?" message. You can ignore this message and launch anyway.
+Once you've cloned the repo, setup cmake with `cmake -S . -B build`. The binaries should be automatically copied in to the bin folder (no mater the build config or platform). 
 
 ### 3rd party libaries
 - [Walnut](https://github.com/TheCherno/Walnut)
