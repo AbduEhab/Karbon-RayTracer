@@ -267,8 +267,8 @@ public:
                                 item_current = 2;
                             }
 
-                            const char *items[] = {"Lambertian", "Metal", "Dielectric"};
-                            ImGui::Combo("Material Selection:", &item_current, items, IM_ARRAYSIZE(items));
+                            const char *materials[] = {"Lambertian", "Metal", "Dielectric"};
+                            ImGui::Combo("Material Selection:", &item_current, materials, IM_ARRAYSIZE(materials));
 
                             float roughness = 0;
                             float ref_idx = 1.05f;
@@ -319,6 +319,87 @@ public:
                             ImGui::ColorEdit3("Material Color", (float *)&color_vec);
 
                             shape->get_material()->set_color(color_vec);
+
+                            // ---------------------------------
+
+                            // auto pattern_type = shape->get_pattern();
+
+                            // auto pattern = 4;
+
+                            // if (!strcmp(pattern_type->get_name(), "Checker"))
+                            // {
+                            //     pattern = 0;
+                            // }
+                            // else if (!strcmp(pattern_type->get_name(), "Gradient"))
+                            // {
+                            //     pattern = 1;
+                            // }
+                            // else if (!strcmp(pattern_type->get_name(), "Ring"))
+                            // {
+                            //     pattern = 2;
+                            // }
+                            // else if (!strcmp(pattern_type->get_name(), "Stripe"))
+                            // {
+                            //     pattern = 3;
+                            // }
+                            // else if (!strcmp(pattern_type->get_name(), "None"))
+                            // {
+                            //     pattern = 4;
+                            // }
+
+                            // auto p_color = shape->get_pattern()->m_second_color;
+
+                            // float p_color_vec[3] = {color.r, color.g, color.b};
+
+                            // ImGui::ColorEdit3("Material Color", (float *)&p_color_vec);
+
+                            // shape->get_pattern()->m_first_color = color_vec;
+
+                            // shape->get_pattern()->m_second_color = p_color_vec;
+
+                            // const char *patterns[] = {"Checker", "Gradient", "Ring", "Stripe", "None"};
+                            // ImGui::Combo("Pattern Selection:", &item_current, patterns, IM_ARRAYSIZE(patterns));
+
+                            // switch (pattern)
+                            // {
+                            // case 0:
+                            //     if (strcmp(mat_type->get_name(), "Checker")) [[likely]]
+                            //         shape->set_pattern(std::make_shared<Karbon::Checker>(Karbon::Checker(*(Karbon::Checker *)pattern_type.get())));
+                            //     else [[unlikely]]
+                            //         shape->set_pattern(std::make_shared<Karbon::Checker>(Karbon::Checker()));
+
+                            //     break;
+                            // case 1:
+                            //     if (strcmp(mat_type->get_name(), "Gradient")) [[likely]]
+                            //         shape->set_pattern(std::make_shared<Karbon::Gradient>(Karbon::Gradient(*(Karbon::Gradient *)pattern_type.get())));
+                            //     else [[unlikely]]
+                            //         shape->set_pattern(std::make_shared<Karbon::Gradient>(Karbon::Gradient()));
+
+                            //     break;
+                            // case 2:
+                            //     if (strcmp(mat_type->get_name(), "Ring")) [[likely]]
+                            //         shape->set_pattern(std::make_shared<Karbon::Ring>(Karbon::Ring(*(Karbon::Ring *)pattern_type.get())));
+                            //     else [[unlikely]]
+                            //         shape->set_pattern(std::make_shared<Karbon::Ring>(Karbon::Ring()));
+
+                            //     break;
+                            // case 3:
+                            //     if (strcmp(mat_type->get_name(), "Stripe")) [[likely]]
+                            //         shape->set_pattern(std::make_shared<Karbon::Stripe>(Karbon::Stripe(*(Karbon::Stripe *)pattern_type.get())));
+                            //     else [[unlikely]]
+                            //         shape->set_pattern(std::make_shared<Karbon::Stripe>(Karbon::Stripe()));
+
+                            //     break;
+                            // case 4:
+                            //     if (strcmp(mat_type->get_name(), "None")) [[likely]]
+                            //         shape->set_pattern(nullptr);
+                            //     else [[unlikely]]
+                            //         shape->set_pattern(nullptr);
+
+                            //     break;
+                            // default:
+                            //     debug_print("[UI]: ", "Invalid pattern selection");
+                            // }
                         }
                         else
                         {
@@ -335,6 +416,7 @@ public:
 
                         ImGui::EndTabItem();
                     }
+
                     ImGui::EndTabBar();
 
                 } // End of Detail view

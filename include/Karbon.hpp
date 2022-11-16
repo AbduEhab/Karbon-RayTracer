@@ -32,6 +32,13 @@
 #include "Shapes/XZPlane.hpp"
 #include "Shapes/YZPlane.hpp"
 
+#include "Patterns/Pattern.hpp"
+
+#include "Patterns/Checker.hpp"
+#include "Patterns/Gradient.hpp"
+#include "Patterns/Ring.hpp"
+#include "Patterns/Stripe.hpp"
+
 #include "Camera.hpp"
 #include "World.hpp"
 

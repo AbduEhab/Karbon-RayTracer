@@ -8,13 +8,15 @@
 #include "Tuples/Point.hpp"
 #include "Tuples/Vector.hpp"
 
+#include "Patterns/Pattern.hpp"
+
 namespace Karbon
 {
 
     struct Shape
     {
 
-        [[nodiscard]] virtual std::pair<float, Shape*> intersects(const Ray &ray) const = 0;
+        [[nodiscard]] virtual std::pair<float, Shape *> intersects(const Ray &ray) const = 0;
 
         virtual ~Shape() = default;
 
@@ -226,12 +228,29 @@ namespace Karbon
             return m_rotation_z;
         }
 
+        // [[nodiscard]] const std::shared_ptr<Pattern> get_pattern() const
+        // {
+        //     return m_pattern;
+        // }
+
+        // [[nodiscard]] std::shared_ptr<Pattern> get_pattern()
+        // {
+        //     return m_pattern;
+        // }
+
+        // Shape &set_pattern(const std::shared_ptr<Pattern> &pattern)
+        // {
+        //     m_pattern = pattern;
+        //     return *this;
+        // }
+
         // serialize all data to a nlohmann json string object
         [[nodiscard]] virtual std::string to_json() const noexcept = 0;
 
     private:
         // private:
         std::shared_ptr<Material> m_material = std::make_shared<Lambertian>(Lambertian(Color(0.5f, 0.5f, 0.5f)));
+        // std::shared_ptr<Pattern> m_pattern = nullptr;
         Karbon::Matrix4 m_transform = Karbon::IDENTITY;
         Karbon::Matrix4 m_inverse_transform = Karbon::IDENTITY;
         Karbon::Matrix4 m_normal_transform = Karbon::IDENTITY;
@@ -242,5 +261,27 @@ namespace Karbon
         float m_rotation_y = 0;
         float m_rotation_z = 0;
     };
+
+    [[nodiscard]] Color Pattern::color_at(Shape &s, Karbon::Point &p) const
+    {
+        Point object_point = s.get_inverse_transform() * p;
+        Point pattern_point = m_inverse_transform * object_point;
+
+        return Pattern::color_at(pattern_point);
+    }
+
+    [[nodiscard]] constexpr Pattern::Pattern(Color &first, Color &second)
+    {
+        m_first_color = first;
+        m_second_color = second;
+    }
+
+    [[nodiscard]] constexpr Pattern::Pattern(Color &first, Color &second, Karbon::Matrix4 &transform)
+    {
+        m_first_color = first;
+        m_second_color = second;
+        m_transform = transform;
+        m_inverse_transform = m_transform.inverse();
+    }
 
 } // namespace Karbon

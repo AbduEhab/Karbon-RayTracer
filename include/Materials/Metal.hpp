@@ -26,10 +26,13 @@ namespace Karbon
             m_roughness = other.m_roughness;
         }
 
-        bool scatter(const Ray &r_in, const Computation &comp, Color &attenuation, Ray &scattered) const
+        bool scatter(const Computation &comp, Color &attenuation, Ray &scattered) const
         {
             scattered = Ray(comp.m_over_point, comp.m_reflection_vector + m_roughness * Vector::random_in_unit_sphere());
+
+            // attenuation = comp.m_s->get_pattern()->color_at(comp.m_p);
             attenuation = get_color();
+
             return (scattered.m_direction.dot(comp.m_normal_vector) > 0);
         }
 

@@ -7,6 +7,11 @@
 #include <Tuples/Point.hpp>
 #include <Tuples/Vector.hpp>
 
+#include "Patterns/Checker.hpp"
+#include "Patterns/Gradient.hpp"
+#include "Patterns/Ring.hpp"
+#include "Patterns/Stripe.hpp"
+
 namespace Karbon
 {
     struct XYPlane : public Shape
@@ -91,6 +96,15 @@ namespace Karbon
                 XY_plane->set_material(Lambertian::from_json(j["material"].dump()));
             else if (j["material"]["type"] == "Dielectric")
                 XY_plane->set_material(Dielectric::from_json(j["material"].dump()));
+
+            // if (j["pattern"]["type"] == "Checker")
+            //     XY_plane->set_pattern(Checker::from_json(j["pattern"].dump()));
+            // else if (j["pattern"]["type"] == "Gradient")
+            //     XY_plane->set_pattern(Gradient::from_json(j["pattern"].dump()));
+            // else if (j["pattern"]["type"] == "Ring")
+            //     XY_plane->set_pattern(Ring::from_json(j["pattern"].dump()));
+            // else if (j["pattern"]["type"] == "Stripe")
+            //     XY_plane->set_pattern(Stripe::from_json(j["pattern"].dump()));
 
             return XY_plane;
         }

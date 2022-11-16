@@ -8,6 +8,11 @@
 #include <Tuples/Point.hpp>
 #include <Tuples/Vector.hpp>
 
+#include "Patterns/Checker.hpp"
+#include "Patterns/Gradient.hpp"
+#include "Patterns/Ring.hpp"
+#include "Patterns/Stripe.hpp"
+
 namespace Karbon
 {
     struct Cube : public Shape
@@ -124,8 +129,17 @@ namespace Karbon
                 cube->set_material(Metal::from_json(j["material"].dump()));
             else if (j["material"]["type"] == "Lambertian")
                 cube->set_material(Lambertian::from_json(j["material"].dump()));
-else if (j["material"]["type"] == "Dielectric")
+            else if (j["material"]["type"] == "Dielectric")
                 cube->set_material(Dielectric::from_json(j["material"].dump()));
+
+            // if (j["pattern"]["type"] == "Checker")
+            //     cube->set_pattern(Checker::from_json(j["pattern"].dump()));
+            // else if (j["pattern"]["type"] == "Gradient")
+            //     cube->set_pattern(Gradient::from_json(j["pattern"].dump()));
+            // else if (j["pattern"]["type"] == "Ring")
+            //     cube->set_pattern(Ring::from_json(j["pattern"].dump()));
+            // else if (j["pattern"]["type"] == "Stripe")
+            //     cube->set_pattern(Stripe::from_json(j["pattern"].dump()));
 
             return cube;
         }

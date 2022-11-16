@@ -12,7 +12,7 @@ namespace Karbon
     struct Material
     {
 
-        virtual bool scatter(const Ray &r_in, const Computation &comp, Color &attenuation, Ray &scattered) const = 0;
+        virtual bool scatter(const Computation &comp, Color &attenuation, Ray &scattered) const = 0;
 
         // get color
         [[nodiscard]] constexpr const Color &get_color() const noexcept

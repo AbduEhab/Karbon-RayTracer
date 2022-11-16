@@ -24,7 +24,7 @@ namespace Karbon
             set_color(other.get_color());
         }
 
-        bool scatter(const Ray &r_in, const Computation &comp, Color &attenuation, Ray &scattered) const;
+        bool scatter(const Computation &comp, Color &attenuation, Ray &scattered) const;
 
         [[nodiscard]] virtual const char *get_name() const
         {

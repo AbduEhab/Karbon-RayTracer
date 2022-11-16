@@ -84,7 +84,7 @@ namespace Karbon
                 Ray scattered;
                 Color attenuation;
 
-                if (hit.second->get_material()->scatter(ray, comp, attenuation, scattered))
+                if (hit.second->get_material()->scatter(comp, attenuation, scattered))
                     return attenuation * color_at(scattered, recurtion_level + 1);
 
                 return Karbon::BLACK;

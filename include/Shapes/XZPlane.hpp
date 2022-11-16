@@ -7,13 +7,18 @@
 #include <Tuples/Point.hpp>
 #include <Tuples/Vector.hpp>
 
+#include "Patterns/Checker.hpp"
+#include "Patterns/Gradient.hpp"
+#include "Patterns/Ring.hpp"
+#include "Patterns/Stripe.hpp"
+
 namespace Karbon
 {
     struct XZPlane : public Shape
     {
         [[nodiscard]] XZPlane() = default;
 
-        [[nodiscard]] std::pair<float, Shape*> intersects(const Ray &ray) const
+        [[nodiscard]] std::pair<float, Shape *> intersects(const Ray &ray) const
         {
             PROFILE_FUNCTION();
 
@@ -91,6 +96,15 @@ namespace Karbon
                 XZ_plane->set_material(Lambertian::from_json(j["material"].dump()));
             else if (j["material"]["type"] == "Dielectric")
                 XZ_plane->set_material(Dielectric::from_json(j["material"].dump()));
+
+            // if (j["pattern"]["type"] == "Checker")
+            //     XZ_plane->set_pattern(Checker::from_json(j["pattern"].dump()));
+            // else if (j["pattern"]["type"] == "Gradient")
+            //     XZ_plane->set_pattern(Gradient::from_json(j["pattern"].dump()));
+            // else if (j["pattern"]["type"] == "Ring")
+            //     XZ_plane->set_pattern(Ring::from_json(j["pattern"].dump()));
+            // else if (j["pattern"]["type"] == "Stripe")
+            //     XZ_plane->set_pattern(Stripe::from_json(j["pattern"].dump()));
 
             return XZ_plane;
         }

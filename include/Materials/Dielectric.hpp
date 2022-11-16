@@ -26,9 +26,10 @@ namespace Karbon
             set_refractive_index(other.get_refractive_index());
         }
 
-        bool scatter(const Ray &r_in, const Computation &comp, Color &attenuation, Ray &scattered) const
+        bool scatter(const Computation &comp, Color &attenuation, Ray &scattered) const
         {
-            attenuation = Color(1.0, 1.0, 1.0);
+            // attenuation = comp.m_s->get_pattern()->color_at(comp.m_p);
+            attenuation = get_color();
 
             float n_ratio = comp.m_inside ? comp.m_n1 / comp.m_n2 : comp.m_n2 / comp.m_n1;
 

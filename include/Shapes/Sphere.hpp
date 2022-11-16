@@ -9,6 +9,11 @@
 #include <Tuples/Point.hpp>
 #include <Tuples/Vector.hpp>
 
+#include "Patterns/Checker.hpp"
+#include "Patterns/Gradient.hpp"
+#include "Patterns/Ring.hpp"
+#include "Patterns/Stripe.hpp"
+
 namespace Karbon
 {
     struct Sphere : public Shape
@@ -83,6 +88,7 @@ namespace Karbon
             j["scale"] = nlohmann::json::parse(get_scale().to_json());
             j["rotation"] = nlohmann::json::parse(get_rotations().to_json());
             j["material"] = nlohmann::json::parse(get_material()->to_json());
+            // j["pattern"] = nlohmann::json::parse(get_pattern()->to_json());
 
             return j.dump();
         }
@@ -108,7 +114,17 @@ namespace Karbon
                 sphere->set_material(Metal::from_json(j["material"].dump()));
             else if (j["material"]["type"] == "Lambertian")
                 sphere->set_material(Lambertian::from_json(j["material"].dump()));
-            
+            else if (j["material"]["type"] == "Dielectric")
+                sphere->set_material(Dielectric::from_json(j["material"].dump()));
+
+            // if (j["pattern"]["type"] == "Checker")
+            //     sphere->set_pattern(Checker::from_json(j["pattern"].dump()));
+            // else if (j["pattern"]["type"] == "Gradient")
+            //     sphere->set_pattern(Gradient::from_json(j["pattern"].dump()));
+            // else if (j["pattern"]["type"] == "Ring")
+            //     sphere->set_pattern(Ring::from_json(j["pattern"].dump()));
+            // else if (j["pattern"]["type"] == "Stripe")
+            //     sphere->set_pattern(Stripe::from_json(j["pattern"].dump()));
 
             return sphere;
         }
