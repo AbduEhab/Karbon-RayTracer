@@ -13,9 +13,8 @@ namespace Karbon
     {
         [[nodiscard]] XYPlane() = default;
 
-        [[nodiscard]] std::pair<float, Shape*> intersects(const Ray &ray) const
+        [[nodiscard]] std::pair<float, Shape *> intersects(const Ray &ray) const
         {
-
             PROFILE_FUNCTION();
 
             Ray transformed_ray = ray.transform(get_inverse_transform());
@@ -64,7 +63,7 @@ namespace Karbon
             j["translation"] = nlohmann::json::parse(get_translation().to_json());
             j["scale"] = nlohmann::json::parse(get_scale().to_json());
             j["rotation"] = nlohmann::json::parse(get_rotations().to_json());
-            // j["material"] = nlohmann::json::parse(get_material()->to_json());
+            j["material"] = nlohmann::json::parse(get_material()->to_json());
 
             return j.dump(4);
         }
@@ -90,6 +89,8 @@ namespace Karbon
                 XY_plane->set_material(Metal::from_json(j["material"].dump()));
             else if (j["material"]["type"] == "Lambertian")
                 XY_plane->set_material(Lambertian::from_json(j["material"].dump()));
+            else if (j["material"]["type"] == "Dielectric")
+                XY_plane->set_material(Dielectric::from_json(j["material"].dump()));
 
             return XY_plane;
         }

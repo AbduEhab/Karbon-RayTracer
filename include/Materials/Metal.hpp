@@ -39,23 +39,24 @@ namespace Karbon
         }
 
         // serialize all data to a nlohmann json string object
-        [[nodiscard]] virtual nlohmann::json to_json() const
+        [[nodiscard]] virtual std::string to_json() const
         {
             nlohmann::json j;
             j["type"] = "Metal";
+            j["refractive_index"] = get_refractive_index();
             j["color"] = nlohmann::json::parse(get_color().to_json());
             return j.dump();
         }
 
         // deserialize all data from a nlohmann json string object
-        [[nodiscard]] static std::shared_ptr<Metal> from_json(const nlohmann::json &json)
+        [[nodiscard]] static std::shared_ptr<Metal> from_json(const std::string &json)
         {
-            // nlohmann::json j = nlohmann::json::parse(json);
+            nlohmann::json j = nlohmann::json::parse(json);
 
             auto mat = std::make_shared<Metal>();
 
-            // mat->set_color(Color::from_json(j["color"].dump()));
-            // mat->set_refractive_index(j["refractive_index"]);
+            mat->set_color(Color::from_json(j["color"].dump()));
+            mat->set_refractive_index(j["refractive_index"]);
 
             return mat;
         }

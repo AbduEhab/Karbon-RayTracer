@@ -56,7 +56,7 @@ namespace Karbon
         [[nodiscard]] virtual const char *get_name() const = 0;
 
         // serialize all data to a nlohmann json string object
-        [[nodiscard]] virtual nlohmann::json to_json() const = 0;
+        [[nodiscard]] virtual std::string to_json() const = 0;
 
     private:
         Color m_color = Karbon::WHITE;

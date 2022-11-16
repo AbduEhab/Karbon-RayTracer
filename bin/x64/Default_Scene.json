@@ -57,40 +57,20 @@
         "width": 800
     },
     "world": {
-        "lights": [
-            {
-                "intensity": {
-                    "a": 255,
-                    "b": 255.0,
-                    "g": 255.0,
-                    "r": 255.0
-                },
-                "position": {
-                    "x": -10.0,
-                    "y": 10.0,
-                    "z": -10.0
-                },
-                "type": "PointLight"
-            }
-        ],
-        "max_depth": 7,
+        "antialiasing_samples": 1,
+        "lights": null,
+        "max_recurtion_level": 7,
         "shapes": [
             {
                 "material": {
-                    "ambient": 0.10000000149011612,
                     "color": {
                         "a": 255,
                         "b": 0.8999999761581421,
                         "g": 0.8999999761581421,
                         "r": 1.0
                     },
-                    "diffuse": 0.8999999761581421,
-                    "pattern": null,
-                    "reflectiveness": 0.30000001192092896,
-                    "refractive index": 1.0,
-                    "shininess": 200.0,
-                    "specular": 0.0,
-                    "transparency": 0.0
+                    "refractive_index": 1.0,
+                    "type": "Lambertian"
                 },
                 "rotation": {
                     "x": 0.0,
@@ -111,20 +91,14 @@
             },
             {
                 "material": {
-                    "ambient": 0.10000000149011612,
                     "color": {
                         "a": 255,
-                        "b": 0.0,
-                        "g": 0.0,
-                        "r": 0.0
+                        "b": 1.0,
+                        "g": 1.0,
+                        "r": 1.0
                     },
-                    "diffuse": 0.10000000149011612,
-                    "pattern": null,
-                    "reflectiveness": 0.30000001192092896,
-                    "refractive index": 1.0,
-                    "shininess": 200.0,
-                    "specular": 1.0,
-                    "transparency": 1.0
+                    "refractive_index": 1.0,
+                    "type": "Metal"
                 },
                 "rotation": {
                     "x": 0.0,
@@ -145,20 +119,14 @@
             },
             {
                 "material": {
-                    "ambient": 0.10000000149011612,
                     "color": {
                         "a": 255,
                         "b": 0.10000000149011612,
                         "g": 1.0,
                         "r": 0.5
                     },
-                    "diffuse": 0.699999988079071,
-                    "pattern": null,
-                    "reflectiveness": 0.30000001192092896,
-                    "refractive index": 1.0,
-                    "shininess": 200.0,
-                    "specular": 0.30000001192092896,
-                    "transparency": 0.0
+                    "refractive_index": 1.0,
+                    "type": "Lambertian"
                 },
                 "rotation": {
                     "x": 0.0,
@@ -179,20 +147,14 @@
             },
             {
                 "material": {
-                    "ambient": 0.10000000149011612,
                     "color": {
                         "a": 255,
                         "b": 0.10000000149011612,
                         "g": 0.800000011920929,
                         "r": 1.0
                     },
-                    "diffuse": 0.699999988079071,
-                    "pattern": null,
-                    "reflectiveness": 0.30000001192092896,
-                    "refractive index": 1.0,
-                    "shininess": 200.0,
-                    "specular": 0.30000001192092896,
-                    "transparency": 0.0
+                    "refractive_index": 1.0,
+                    "type": "Lambertian"
                 },
                 "rotation": {
                     "x": 0.0,
