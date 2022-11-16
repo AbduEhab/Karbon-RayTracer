@@ -82,10 +82,12 @@ public:
         {
             if (ImGui::Button("Remove"))
             {
-                if (selected > shapes.size())
-                    scene.m_world.remove_light(lights[selected - shapes.size() - 1]);
+                if (selected > shapes.size() - 1)
+                    scene.m_world.remove_light(selected - shapes.size());
                 else
                     scene.m_world.remove_shape(shapes[selected]);
+
+                selected = 0;
             }
 
             ImGui::SetNextItemOpen(true, ImGuiCond_Once);
@@ -105,14 +107,6 @@ public:
                         auto cube = std::make_shared<Karbon::Cube>(Karbon::Cube());
                         scene.m_world.add_shape(cube);
                     }
-
-                    // ImGui::SameLine();
-
-                    // if(ImGui::Button("Add Cylinder"))
-                    // {
-                    //     auto cylinder = std::make_shared<Karbon::Cylinder>(Karbon::Cylinder());
-                    //     scene.m_world.add_shape(cylinder);
-                    // }
 
                     if (ImGui::Button("Add XZ-Plane"))
                     {
@@ -177,10 +171,32 @@ public:
         ImGui::SetNextItemOpen(true, ImGuiCond_Once);
         if (ImGui::TreeNode("Details"))
         {
-
             {
+                bool no_shapes = false;
+                bool no_lights = false;
                 ImGui::BeginGroup();
-                ImGui::Text("Selected object: %s %d", selected < shapes.size() ? shapes[selected]->get_name() : lights[selected % lights.size()]->get_name(), selected);
+                if (shapes.size() == 0)
+                {
+                    ImGui::TextUnformatted("No shapes in scene");
+                    no_shapes = true;
+                }
+                if (lights.size() == 0)
+                {
+                    ImGui::TextUnformatted("No lights in scene");
+                    no_lights = true;
+                }
+
+                // ImGui::Text("Selected object: %s %d", selected < shapes.size() ? shapes[selected]->get_name() : lights[selected % lights.size()]->get_name(), selected);
+
+                if (no_shapes && no_lights)
+                    ImGui::Text("The scene is empty");
+                else if (no_shapes && !no_lights)
+                    ImGui::Text("Selected object: %s %d", lights[selected]->get_name(), selected);
+                else if (no_lights && !no_shapes)
+                    ImGui::Text("Selected object: %s %d", shapes[selected]->get_name(), selected);
+                else
+                    ImGui::Text("Selected object: %s %d", selected < shapes.size() ? shapes[selected]->get_name() : lights[selected % lights.size()]->get_name(), selected);
+
                 ImGui::Separator();
                 if (ImGui::BeginTabBar("##Tabs", ImGuiTabBarFlags_None))
                 {
@@ -215,15 +231,18 @@ public:
                         }
                         else
                         {
-                            auto light = lights[selected % lights.size()];
+                            if (lights.size() != 0)
+                            {
+                                auto light = lights[selected % lights.size()];
 
-                            auto position_vec = light->get_position();
+                                auto position_vec = light->get_position();
 
-                            float position[3] = {position_vec.x, position_vec.y, position_vec.z};
+                                float position[3] = {position_vec.x, position_vec.y, position_vec.z};
 
-                            ImGui::InputFloat3("Position", (float *)&position);
+                                ImGui::InputFloat3("Position", (float *)&position);
 
-                            light->set_position(position);
+                                light->set_position(position);
+                            }
                         }
 
                         ImGui::EndTabItem();
