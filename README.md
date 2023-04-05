@@ -2,6 +2,8 @@
 
 This Raytracer is built to demonstrate the renderer built in the "Ray Tracing in One Weekend" book series. This is a Ray-Tracer built on the same architecture used in my [Coal-RayTracer](https://github.com/AbduEhab/Coal-RayTracer).
 
+> Latest commit increases the perfromance 10 folds! (from 15s to 1.5s)
+
 Fully supports Windows (full UI and stuff) - NOW SUPPORTS GCC (tested on windows only). Linux works in `Legacy mode` which would output the rendered image onto the terminal, macOS was not tested.
 
 ## Requirements (for compiling)

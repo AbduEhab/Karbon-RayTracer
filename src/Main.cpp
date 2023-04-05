@@ -27,7 +27,7 @@ public:
 
         ImGui::Begin("World Outline");
         {
-            static char *file_dialog_buffer = nullptr;
+            static char *file_dialog_buffer = new char[500];
             static char path[500] = "";
 
             ImGui::TextUnformatted("Path: ");
@@ -36,12 +36,11 @@ public:
 
             if (FileDialog::file_dialog_open)
             {
-                FileDialog::ShowFileDialog(&FileDialog::file_dialog_open, file_dialog_buffer, sizeof(file_dialog_buffer), FileDialog::file_dialog_open_type);
+                FileDialog::ShowFileDialog_s(&FileDialog::file_dialog_open, file_dialog_buffer, FileDialog::file_dialog_open_type);
             }
 
             if (ImGui::Button("Choose file"))
             {
-
                 file_dialog_buffer = path;
                 FileDialog::file_dialog_open = true;
                 FileDialog::file_dialog_open_type = FileDialog::FileDialogType::OpenFile;
